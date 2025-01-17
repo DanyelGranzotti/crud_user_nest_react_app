@@ -30,7 +30,7 @@ export class User {
     enum: UserRoles,
     array: true,
   })
-  roles: UserRoles;
+  roles: UserRoles = UserRoles.USER;
 
   @Column({ nullable: true })
   password: string;
