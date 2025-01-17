@@ -7,11 +7,14 @@ WORKDIR /app
 # Copy package.json and package-lock.json
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install --legacy-peer-deps
+# Install build dependencies for node-gyp and git
+RUN apk add --no-cache python3 make g++ git
 
 # Copy the rest of the application code
 COPY . .
+
+# Install dependencies
+RUN npm install --legacy-peer-deps
 
 # Build the application
 RUN npm run build

@@ -29,4 +29,4 @@ jobs:
           context: .
           file: ./back-end/Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository }}/back-end:latest
+          tags: ghcr.io/danyelgranzotti/crud_user_nest_react_app/back-end:latest
