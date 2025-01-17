@@ -83,11 +83,19 @@ export class UsersService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+    const user = await this.findOne(id);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
     await this.usersRepository.update(id, updateUserDto);
     return this.findOne(id);
   }
 
   async remove(id: string): Promise<void> {
+    const user = await this.findOne(id);
+    if (user.role === UserRoles.ADMIN) {
+      throw new BadRequestException('Admin user cannot be deleted');
+    }
     await this.usersRepository.delete(id);
   }
 }

@@ -184,7 +184,7 @@ describe('UsersService', () => {
   it('should remove a user', async () => {
     const user = new User();
     const validUUID = uuidv4();
-    jest.spyOn(repository, 'findOneBy').mockResolvedValue(user);
+    jest.spyOn(repository, 'findOne').mockResolvedValue(user);
     jest.spyOn(repository, 'delete').mockResolvedValue(undefined);
 
     expect(await service.remove(validUUID)).toBeUndefined();
@@ -229,5 +229,16 @@ describe('UsersService', () => {
     jest.spyOn(repository, 'delete').mockResolvedValue(undefined);
 
     expect(await service.remove(validUUID)).toBeUndefined();
+  });
+
+  it('should throw BadRequestException if trying to delete admin user', async () => {
+    const adminUser = new User();
+    adminUser.role = UserRoles.ADMIN;
+    const validUUID = uuidv4();
+    jest.spyOn(repository, 'findOne').mockResolvedValue(adminUser);
+
+    await expect(service.remove(validUUID)).rejects.toThrow(
+      BadRequestException,
+    );
   });
 });
