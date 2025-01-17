@@ -5,6 +5,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { FavoriteColor } from './enums/favorite-color.enum';
+import { UserRoles } from './enums/user-roles.enum';
 import { UsersService } from './users.service';
 
 describe('UsersService', () => {
@@ -37,9 +38,50 @@ describe('UsersService', () => {
       email: 'john@example.com',
       favoriteColor: FavoriteColor.BLUE,
       notes: 'Test note',
+      roles: UserRoles.USER,
+      password: 'password',
     };
     const user = new User();
     Object.assign(user, createUserDto);
+
+    jest.spyOn(repository, 'create').mockReturnValue(user);
+    jest.spyOn(repository, 'save').mockResolvedValue(user);
+
+    expect(await service.create(createUserDto)).toEqual(user);
+  });
+
+  it('should create an admin user with password', async () => {
+    const createUserDto: CreateUserDto = {
+      fullName: 'Admin User',
+      cpf: '123456789',
+      email: 'admin@example.com',
+      favoriteColor: FavoriteColor.BLUE,
+      notes: 'Admin note',
+      roles: UserRoles.ADMIN,
+      password: 'adminpassword',
+    };
+    const user = new User();
+    Object.assign(user, createUserDto);
+
+    jest.spyOn(repository, 'create').mockReturnValue(user);
+    jest.spyOn(repository, 'save').mockResolvedValue(user);
+
+    expect(await service.create(createUserDto)).toEqual(user);
+  });
+
+  it('should create a regular user without password', async () => {
+    const createUserDto: CreateUserDto = {
+      fullName: 'Regular User',
+      cpf: '123456789',
+      email: 'user@example.com',
+      favoriteColor: FavoriteColor.BLUE,
+      notes: 'User note',
+      roles: UserRoles.USER,
+      password: 'userpassword',
+    };
+    const user = new User();
+    Object.assign(user, createUserDto);
+    user.password = '';
 
     jest.spyOn(repository, 'create').mockReturnValue(user);
     jest.spyOn(repository, 'save').mockResolvedValue(user);

@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
+import { UserRoles } from './enums/user-roles.enum';
 
 @Injectable()
 export class UsersService {
@@ -13,6 +14,13 @@ export class UsersService {
   ) {}
 
   create(createUserDto: CreateUserDto): Promise<User> {
+    if (createUserDto.roles.includes(UserRoles.ADMIN)) {
+      if (!createUserDto.password) {
+        throw new Error('Password is required for admin users');
+      }
+    } else {
+      createUserDto.password = '';
+    }
     const newUser: User = this.usersRepository.create(createUserDto);
     return this.usersRepository.save(newUser);
   }
@@ -22,7 +30,6 @@ export class UsersService {
   }
 
   findOne(id: string): Promise<User> {
-    console.log('id', id);
     return this.usersRepository.findOneBy({ id });
   }
 

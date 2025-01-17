@@ -1,5 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { FavoriteColor } from '../enums/favorite-color.enum';
+import { UserRoles } from '../enums/user-roles.enum';
 
 @Entity()
 export class User {
@@ -23,4 +24,14 @@ export class User {
 
   @Column()
   notes: string;
+
+  @Column({
+    type: 'enum',
+    enum: UserRoles,
+    array: true,
+  })
+  roles: UserRoles;
+
+  @Column({ nullable: true })
+  password: string;
 }
