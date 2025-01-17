@@ -10,21 +10,15 @@ services:
     restart: always
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    networks:
-      - crud_user_network
-
+   
   adminer:
     image: adminer
     ports:
       - "8080:8080"
     depends_on:
       - postgres
-    networks:
-      - crud_user_network
+   
 
 volumes:
   postgres_data:
 
-networks:
-  crud_user_network:
-    driver: bridge
