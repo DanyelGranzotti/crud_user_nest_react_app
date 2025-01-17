@@ -1,5 +1,5 @@
 # Use a lightweight Node.js image
-FROM node:18-alpine AS builder
+FROM node:22.13.0-alpine as builder
 
 # Set the working directory
 WORKDIR /app
@@ -7,20 +7,17 @@ WORKDIR /app
 # Copy package.json and package-lock.json
 COPY package*.json ./
 
-# Install build dependencies for node-gyp and git
-RUN apk add --no-cache python3 make g++ git
+# Install dependencies
+RUN npm install
 
 # Copy the rest of the application code
 COPY . .
-
-# Install dependencies
-RUN npm install --legacy-peer-deps
 
 # Build the application
 RUN npm run build
 
 # Use a separate stage for the final image
-FROM node:18-alpine
+FROM node:22.13.0-alpine
 
 # Set the working directory
 WORKDIR /app
