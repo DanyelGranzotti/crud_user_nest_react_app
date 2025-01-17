@@ -84,6 +84,10 @@ export class UsersService {
       .take(limit)
       .getManyAndCount();
 
+    if (total === 0) {
+      throw new NotFoundException('No users found with the given filters');
+    }
+
     return {
       data,
       total,
