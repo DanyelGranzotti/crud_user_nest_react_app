@@ -18,4 +18,15 @@ export class AuthController {
   async login(@Body() loginDto: LoginDto) {
     return this.authService.login(loginDto);
   }
+
+  @Post('refresh')
+  @ApiOperation({ summary: 'Refresh token' })
+  @ApiResponse({
+    status: 201,
+    description: 'The token has been successfully refreshed.',
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  async refresh(@Body('refresh_token') refreshToken: string) {
+    return this.authService.refreshToken(refreshToken);
+  }
 }

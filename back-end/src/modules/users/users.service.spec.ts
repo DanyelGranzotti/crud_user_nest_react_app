@@ -147,9 +147,20 @@ describe('UsersService', () => {
 
   it('should find all users', async () => {
     const users = [new User(), new User()];
-    jest.spyOn(repository, 'find').mockResolvedValue(users);
+    const total = users.length;
+    const mockQueryBuilder = {
+      andWhere: jest.fn().mockReturnThis(),
+      skip: jest.fn().mockReturnThis(),
+      take: jest.fn().mockReturnThis(),
+      getManyAndCount: jest.fn().mockResolvedValue([users, total]),
+    };
 
-    expect(await service.findAll()).toEqual(users);
+    jest
+      .spyOn(repository, 'createQueryBuilder')
+      .mockReturnValue(mockQueryBuilder as any);
+
+    const result = await service.findAll(1, 10, {});
+    expect(result).toEqual({ data: users, total, page: 1, limit: 10 });
   });
 
   it('should find one user by id', async () => {
