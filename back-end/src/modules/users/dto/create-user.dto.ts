@@ -1,0 +1,38 @@
+import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  Matches,
+} from 'class-validator';
+import { FavoriteColor } from '../enums/favorite-color.enum';
+import { UserRoles } from '../enums/user-roles.enum';
+
+export class CreateUserDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  fullName: string;
+
+  @ApiProperty()
+  @Matches(/^\d{11}$/, { message: 'CPF must be 11 digits and numbers only' })
+  cpf: string;
+
+  @ApiProperty()
+  @IsEmail()
+  email: string;
+
+  @ApiProperty({ enum: FavoriteColor })
+  favoriteColor: FavoriteColor;
+
+  @ApiProperty()
+  notes: string;
+
+  @ApiProperty({ enum: UserRoles, required: false })
+  @IsEnum(UserRoles)
+  role: UserRoles = UserRoles.USER;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  password: string;
+}
