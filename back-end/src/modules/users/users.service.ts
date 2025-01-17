@@ -52,8 +52,44 @@ export class UsersService {
     return this.usersRepository.save(newUser);
   }
 
-  findAll(): Promise<User[]> {
-    return this.usersRepository.find();
+  async findAll(
+    page: number = 1,
+    limit: number = 10,
+    filters: any = {},
+  ): Promise<{ data: User[]; total: number; page: number; limit: number }> {
+    const skip = (page - 1) * limit;
+    const queryBuilder = this.usersRepository.createQueryBuilder('user');
+
+    if (filters.cpf) {
+      queryBuilder.andWhere('user.cpf = :cpf', { cpf: filters.cpf });
+    }
+    if (filters.fullName) {
+      queryBuilder.andWhere('LOWER(user.fullName) LIKE LOWER(:fullName)', {
+        fullName: `%${filters.fullName}%`,
+      });
+    }
+    if (filters.favoriteColor) {
+      queryBuilder.andWhere('user.favoriteColor = :favoriteColor', {
+        favoriteColor: filters.favoriteColor,
+      });
+    }
+    if (filters.email) {
+      queryBuilder.andWhere('user.email LIKE :email', {
+        email: `%${filters.email}%`,
+      });
+    }
+
+    const [data, total] = await queryBuilder
+      .skip(skip)
+      .take(limit)
+      .getManyAndCount();
+
+    return {
+      data,
+      total,
+      page,
+      limit,
+    };
   }
 
   async findOne(id: string): Promise<User> {

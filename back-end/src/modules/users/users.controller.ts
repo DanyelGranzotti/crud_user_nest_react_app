@@ -8,6 +8,7 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
   UsePipes,
   ValidationPipe,
@@ -15,6 +16,7 @@ import {
 import {
   ApiBearerAuth,
   ApiOperation,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -22,6 +24,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
+import { FavoriteColor } from './enums/favorite-color.enum';
 import { UsersService } from './users.service';
 
 @ApiTags('users')
@@ -50,10 +53,35 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  @ApiOperation({ summary: 'Get all users' })
-  @ApiResponse({ status: 200, description: 'Return all users.', type: [User] })
-  findAll() {
-    return this.usersService.findAll();
+  @ApiOperation({ summary: 'Get all users with pagination and filters' })
+  @ApiQuery({ name: 'page', required: false })
+  @ApiQuery({ name: 'limit', required: false })
+  @ApiQuery({ name: 'cpf', required: false })
+  @ApiQuery({ name: 'fullName', required: false })
+  @ApiQuery({ name: 'favoriteColor', required: false, enum: FavoriteColor })
+  @ApiQuery({ name: 'email', required: false })
+  @ApiResponse({
+    status: 200,
+    description: 'Return all users with pagination info.',
+    schema: {
+      properties: {
+        data: { type: 'array', items: { $ref: '#/components/schemas/User' } },
+        total: { type: 'number' },
+        page: { type: 'number' },
+        limit: { type: 'number' },
+      },
+    },
+  })
+  findAll(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+    @Query('cpf') cpf?: string,
+    @Query('fullName') fullName?: string,
+    @Query('favoriteColor') favoriteColor?: FavoriteColor,
+    @Query('email') email?: string,
+  ) {
+    const filters = { cpf, fullName, favoriteColor, email };
+    return this.usersService.findAll(page, limit, filters);
   }
 
   @UseGuards(JwtAuthGuard)
