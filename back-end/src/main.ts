@@ -1,11 +1,11 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-import { NestFactory, Reflector } from '@nestjs/core';
+import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { DataSource } from 'typeorm';
 import { AppModule } from './app.module';
-import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
+import { UsersSeeder } from './modules/users/users.seeder';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -14,11 +14,13 @@ async function bootstrap() {
     .setTitle('User API')
     .setDescription('API for user management')
     .setVersion('1.0')
+    .addBearerAuth(
+      { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
+      'access-token',
+    )
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
-
-  app.useGlobalGuards(new JwtAuthGuard(new Reflector()));
 
   await app.listen(process.env.PORT ?? 3000);
   console.log(`Application is running on: ${await app.getUrl()}`);
@@ -27,5 +29,8 @@ async function bootstrap() {
   dataSource.isInitialized
     ? console.log('Database connection established')
     : console.log('Database connection failed');
+
+  const usersSeeder = app.get(UsersSeeder);
+  await usersSeeder.seed();
 }
 bootstrap();

@@ -1,3 +1,6 @@
+/**
+ * Represents a user record in the database.
+ */
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { FavoriteColor } from '../enums/favorite-color.enum';
 import { UserRoles } from '../enums/user-roles.enum';
@@ -10,10 +13,10 @@ export class User {
   @Column()
   fullName: string;
 
-  @Column()
+  @Column({ unique: true })
   cpf: string;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
 
   @Column({
@@ -28,9 +31,9 @@ export class User {
   @Column({
     type: 'enum',
     enum: UserRoles,
-    array: true,
+    default: UserRoles.USER,
   })
-  roles: UserRoles = UserRoles.USER;
+  role: UserRoles;
 
   @Column({ nullable: true })
   password: string;
