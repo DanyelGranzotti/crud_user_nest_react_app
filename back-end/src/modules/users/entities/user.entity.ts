@@ -6,10 +6,12 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Color } from '../../colors/entities/color.entity';
 import { UserRoles } from '../enums/user-roles.enum';
+import { Note } from '../../notes/entities/note.entity';
 
 @Entity()
 export class User {
@@ -29,8 +31,8 @@ export class User {
   @JoinColumn({ name: 'favoriteColorId' })
   favoriteColor: Color;
 
-  @Column()
-  notes: string;
+  @OneToMany(() => Note, (note) => note.user)
+  notes: Note[];
 
   @Column({
     type: 'enum',

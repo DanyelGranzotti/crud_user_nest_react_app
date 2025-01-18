@@ -53,7 +53,7 @@ describe('AuthService', () => {
         fullName: 'Test User',
         cpf: '123456789',
         favoriteColor: new Color(),
-        notes: 'Some notes',
+        notes: [],
         role: UserRoles.USER,
       };
       jest.spyOn(usersService, 'findOneByEmail').mockResolvedValue(user);
@@ -93,7 +93,7 @@ describe('AuthService', () => {
         fullName: 'Test User',
         cpf: '123456789',
         favoriteColor: new Color(),
-        notes: 'Some notes',
+        notes: [],
         role: UserRoles.USER,
       };
       jest.spyOn(authService, 'validateUser').mockResolvedValue(user);
@@ -123,7 +123,7 @@ describe('AuthService', () => {
         fullName: 'Test User',
         cpf: '123456789',
         favoriteColor: new Color(),
-        notes: 'Some notes',
+        notes: [],
         role: UserRoles.USER,
         password: 'password',
       };

@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as dotenv from 'dotenv';
 import { Repository } from 'typeorm';
 import { Color } from '../colors/entities/color.entity';
+import { Note } from '../notes/entities/note.entity';
 import { User } from './entities/user.entity';
 import { UserRoles } from './enums/user-roles.enum';
 
@@ -17,6 +18,8 @@ export class UsersSeeder {
     private usersRepository: Repository<User>,
     @InjectRepository(Color)
     private colorsRepository: Repository<Color>,
+    @InjectRepository(Note)
+    private notesRepository: Repository<Note>,
   ) {}
 
   /**
@@ -52,13 +55,21 @@ export class UsersSeeder {
         cpf: '00000000000',
         email: adminEmail,
         favoriteColor,
-        notes: 'Admin account',
+        notes: [],
         role: UserRoles.ADMIN,
         password: adminPassword,
       });
 
       await this.usersRepository.save(newUser);
       this.logger.log('Admin user created');
+
+      const exampleNote = this.notesRepository.create({
+        description: 'This is an example note for the admin user.',
+        user: newUser,
+      });
+
+      await this.notesRepository.save(exampleNote);
+      this.logger.log('Example note for admin user created');
     } else {
       this.logger.log('Admin user already exists');
     }

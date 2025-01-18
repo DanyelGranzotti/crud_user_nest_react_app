@@ -9,6 +9,7 @@ import {
   Patch,
   Post,
   Query,
+  UnauthorizedException,
   UseGuards,
   UsePipes,
   ValidationPipe,
@@ -24,6 +25,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
+import { UserRoles } from './enums/user-roles.enum';
 import { UsersService } from './users.service';
 
 @ApiTags('users')
@@ -32,7 +34,6 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @UseGuards(JwtAuthGuard)
   @UsePipes(
     new ValidationPipe({
       exceptionFactory: (errors) => new BadRequestException(errors),
@@ -47,6 +48,11 @@ export class UsersController {
   })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   create(@Body() createUserDto: CreateUserDto) {
+    if (createUserDto.role === UserRoles.ADMIN) {
+      throw new UnauthorizedException(
+        'Você não tem permissão para criar um usuário admin.',
+      );
+    }
     return this.usersService.create(createUserDto);
   }
 
@@ -85,8 +91,12 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  @ApiOperation({ summary: 'Get a user by ID' })
-  @ApiResponse({ status: 200, description: 'Return the user.', type: User })
+  @ApiOperation({ summary: 'Get a user by ID along with their last two notes' })
+  @ApiResponse({
+    status: 200,
+    description: 'Return the user and their last two notes.',
+    type: User,
+  })
   @ApiResponse({ status: 404, description: 'User not found.' })
   findOne(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.usersService.findOne(id);
