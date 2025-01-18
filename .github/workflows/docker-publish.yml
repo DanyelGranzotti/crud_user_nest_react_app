@@ -1,4 +1,4 @@
-name: Publish Docker Back-end Docker Image
+name: Publish Docker image
 
 on:
   push:
@@ -34,20 +34,3 @@ jobs:
           file: ./back-end/Dockerfile
           push: true
           tags: ghcr.io/danyelgranzotti/crud_user_nest_react_app/back-end:latest
-
-      - name: Install Railway CLI
-        run: npm install -g @railway/cli
-
-      - name: Link & Deploy to Railway
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: |
-          railway link 81ed9296-5129-4777-b9c6-a5dada9ba39d
-
-          railway variables set DB_HOST=roundhouse.proxy.rlwy.net
-          railway variables set DB_PORT=37833
-          railway variables set DB_USERNAME=postgres
-          railway variables set DB_PASSWORD=pnVNfBmxRzAwJjDMzShHjyqjrRAIHBcE
-          railway variables set DB_DATABASE=railway
-
-          railway up
