@@ -3,10 +3,13 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as bcrypt from 'bcrypt';
 import { validate as validateCPF } from 'cpf-check';
 import { Repository } from 'typeorm';
+import { Color } from '../colors/entities/color.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -17,6 +20,8 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    @InjectRepository(Color)
+    private colorsRepository: Repository<Color>,
   ) {}
 
   private async validateUser(createUserDto: CreateUserDto) {
@@ -39,16 +44,35 @@ export class UsersService {
     }
   }
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
-    await this.validateUser(createUserDto);
+  isAuthenticated(): boolean {
+    // Implement your authentication logic here
+    return true; // Placeholder, replace with actual authentication check
+  }
 
-    if (createUserDto.role === UserRoles.ADMIN && !createUserDto.password) {
-      throw new BadRequestException('Password is required for admin users');
-    } else if (createUserDto.role !== UserRoles.ADMIN) {
-      createUserDto.password = '';
+  async create(createUserDto: CreateUserDto): Promise<User> {
+    if (createUserDto.role === UserRoles.ADMIN && !this.isAuthenticated()) {
+      throw new UnauthorizedException(
+        'Você não tem permissão para criar um usuário admin.',
+      );
     }
 
-    const newUser: User = this.usersRepository.create(createUserDto);
+    await this.validateUser(createUserDto);
+
+    const favoriteColor = await this.colorsRepository.findOne({
+      where: { id: createUserDto.favoriteColorId },
+    });
+    if (!favoriteColor) {
+      throw new BadRequestException('Favorite color not found');
+    }
+
+    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+
+    const newUser: User = this.usersRepository.create({
+      ...createUserDto,
+      favoriteColor,
+      password: hashedPassword,
+      notes: [], // Ensure notes is an empty array initially
+    });
     return this.usersRepository.save(newUser);
   }
 
@@ -107,11 +131,17 @@ export class UsersService {
 
     const user = await this.usersRepository.findOne({
       where: { id },
+      relations: ['notes'],
     });
 
     if (!user) {
       throw new NotFoundException('User not found');
     }
+
+    user.notes = user.notes || [];
+    user.notes = user.notes
+      .sort((a, b) => b.created_at.getTime() - a.created_at.getTime())
+      .slice(0, 2);
 
     return user;
   }
@@ -127,7 +157,21 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    await this.usersRepository.update(id, updateUserDto);
+
+    if (updateUserDto.favoriteColorId) {
+      const favoriteColor = await this.colorsRepository.findOne({
+        where: { id: updateUserDto.favoriteColorId },
+      });
+      if (!favoriteColor) {
+        throw new BadRequestException('Favorite color not found');
+      }
+      updateUserDto.favoriteColorId = favoriteColor.id;
+    }
+
+    await this.usersRepository.update(id, {
+      ...updateUserDto,
+      notes: user.notes,
+    });
     return this.findOne(id);
   }
 

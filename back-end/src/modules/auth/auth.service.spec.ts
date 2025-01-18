@@ -4,7 +4,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
-import { FavoriteColor } from '../users/enums/favorite-color.enum';
+import { Color } from '../colors/entities/color.entity';
 import { UserRoles } from '../users/enums/user-roles.enum';
 import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
@@ -52,8 +52,8 @@ describe('AuthService', () => {
         password: 'password',
         fullName: 'Test User',
         cpf: '123456789',
-        favoriteColor: FavoriteColor.BLUE,
-        notes: 'Some notes',
+        favoriteColor: new Color(),
+        notes: [],
         role: UserRoles.USER,
       };
       jest.spyOn(usersService, 'findOneByEmail').mockResolvedValue(user);
@@ -92,8 +92,8 @@ describe('AuthService', () => {
         password: 'password',
         fullName: 'Test User',
         cpf: '123456789',
-        favoriteColor: FavoriteColor.BLUE,
-        notes: 'Some notes',
+        favoriteColor: new Color(),
+        notes: [],
         role: UserRoles.USER,
       };
       jest.spyOn(authService, 'validateUser').mockResolvedValue(user);
@@ -122,8 +122,8 @@ describe('AuthService', () => {
         email: 'test@test.com',
         fullName: 'Test User',
         cpf: '123456789',
-        favoriteColor: FavoriteColor.BLUE,
-        notes: 'Some notes',
+        favoriteColor: new Color(),
+        notes: [],
         role: UserRoles.USER,
         password: 'password',
       };
