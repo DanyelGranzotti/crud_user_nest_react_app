@@ -5,6 +5,7 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { DataSource } from 'typeorm';
 import { AppModule } from './app.module';
+import { ColorsSeeder } from './modules/colors/colors.seeder';
 import { UsersSeeder } from './modules/users/users.seeder';
 
 async function bootstrap() {
@@ -32,5 +33,8 @@ async function bootstrap() {
 
   const usersSeeder = app.get(UsersSeeder);
   await usersSeeder.seed();
+
+  const colorsSeeder = app.get(ColorsSeeder);
+  await colorsSeeder.seed();
 }
 bootstrap();
