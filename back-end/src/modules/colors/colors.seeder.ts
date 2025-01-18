@@ -1,9 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ColorsService } from './colors.service';
 import { CreateColorDto } from './dto/create-color.dto';
 
 @Injectable()
 export class ColorsSeeder {
+  private readonly logger = new Logger(ColorsSeeder.name);
+
   constructor(private readonly colorsService: ColorsService) {}
 
   async seed() {
@@ -17,8 +19,16 @@ export class ColorsSeeder {
       { name: 'Violet', hex_code: '#EE82EE', active: true },
     ];
 
-    for (const color of colors) {
-      await this.colorsService.create(color);
-    }
+    await Promise.all(
+      colors.map(async (color) => {
+        try {
+          await this.colorsService.create(color);
+        } catch (error) {
+          this.logger.error(
+            `Failed to create color ${color.name}: ${(error as any).message}`,
+          );
+        }
+      }),
+    );
   }
 }

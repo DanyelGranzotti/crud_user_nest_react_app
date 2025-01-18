@@ -24,7 +24,6 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
-import { FavoriteColor } from './enums/favorite-color.enum';
 import { UsersService } from './users.service';
 
 @ApiTags('users')
@@ -58,7 +57,7 @@ export class UsersController {
   @ApiQuery({ name: 'limit', required: false })
   @ApiQuery({ name: 'cpf', required: false })
   @ApiQuery({ name: 'fullName', required: false })
-  @ApiQuery({ name: 'favoriteColor', required: false, enum: FavoriteColor })
+  @ApiQuery({ name: 'favoriteColorId', required: false })
   @ApiQuery({ name: 'email', required: false })
   @ApiResponse({
     status: 200,
@@ -77,7 +76,7 @@ export class UsersController {
     @Query('limit') limit: number = 10,
     @Query('cpf') cpf?: string,
     @Query('fullName') fullName?: string,
-    @Query('favoriteColor') favoriteColor?: FavoriteColor,
+    @Query('favoriteColorId') favoriteColor?: string,
     @Query('email') email?: string,
   ) {
     const filters = { cpf, fullName, favoriteColor, email };

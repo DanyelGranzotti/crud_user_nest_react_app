@@ -7,6 +7,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate as validateCPF } from 'cpf-check';
 import { Repository } from 'typeorm';
+import { Color } from '../colors/entities/color.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -17,6 +18,8 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    @InjectRepository(Color)
+    private colorsRepository: Repository<Color>,
   ) {}
 
   private async validateUser(createUserDto: CreateUserDto) {
@@ -42,13 +45,17 @@ export class UsersService {
   async create(createUserDto: CreateUserDto): Promise<User> {
     await this.validateUser(createUserDto);
 
-    if (createUserDto.role === UserRoles.ADMIN && !createUserDto.password) {
-      throw new BadRequestException('Password is required for admin users');
-    } else if (createUserDto.role !== UserRoles.ADMIN) {
-      createUserDto.password = '';
+    const favoriteColor = await this.colorsRepository.findOne({
+      where: { id: createUserDto.favoriteColorId },
+    });
+    if (!favoriteColor) {
+      throw new BadRequestException('Favorite color not found');
     }
 
-    const newUser: User = this.usersRepository.create(createUserDto);
+    const newUser: User = this.usersRepository.create({
+      ...createUserDto,
+      favoriteColor,
+    });
     return this.usersRepository.save(newUser);
   }
 
@@ -127,6 +134,17 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
+
+    if (updateUserDto.favoriteColorId) {
+      const favoriteColor = await this.colorsRepository.findOne({
+        where: { id: updateUserDto.favoriteColorId },
+      });
+      if (!favoriteColor) {
+        throw new BadRequestException('Favorite color not found');
+      }
+      updateUserDto.favoriteColorId = favoriteColor.id;
+    }
+
     await this.usersRepository.update(id, updateUserDto);
     return this.findOne(id);
   }

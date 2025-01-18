@@ -1,18 +1,22 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as dotenv from 'dotenv';
 import { Repository } from 'typeorm';
+import { Color } from '../colors/entities/color.entity';
 import { User } from './entities/user.entity';
-import { FavoriteColor } from './enums/favorite-color.enum';
 import { UserRoles } from './enums/user-roles.enum';
 
 dotenv.config();
 
 @Injectable()
 export class UsersSeeder {
+  private readonly logger = new Logger(UsersSeeder.name);
+
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    @InjectRepository(Color)
+    private colorsRepository: Repository<Color>,
   ) {}
 
   /**
@@ -23,6 +27,7 @@ export class UsersSeeder {
     const adminPassword = process.env.USER_ADMIN_PASSWORD;
 
     if (!adminEmail || !adminPassword) {
+      this.logger.error('Admin credentials not set in environment variables');
       throw new BadRequestException(
         'Admin credentials not set in environment variables',
       );
@@ -33,21 +38,29 @@ export class UsersSeeder {
     });
 
     if (!adminUser) {
+      const favoriteColor = await this.colorsRepository.findOne({
+        where: { name: 'Red' },
+      });
+      if (!favoriteColor) {
+        this.logger.error('Favorite color not found');
+        throw new BadRequestException('Favorite color not found');
+      }
+
       // TODO: hash adminPassword before saving in production
       const newUser = this.usersRepository.create({
         fullName: 'Admin User',
         cpf: '00000000000',
         email: adminEmail,
-        favoriteColor: FavoriteColor.BLUE,
+        favoriteColor,
         notes: 'Admin account',
         role: UserRoles.ADMIN,
         password: adminPassword,
       });
 
       await this.usersRepository.save(newUser);
-      console.log('Admin user created');
+      this.logger.log('Admin user created');
     } else {
-      console.log('Admin user already exists');
+      this.logger.log('Admin user already exists');
     }
   }
 }

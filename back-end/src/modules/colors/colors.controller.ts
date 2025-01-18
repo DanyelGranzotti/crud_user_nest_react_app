@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseUUIDPipe,
   Patch,
   Post,
   UseGuards,
@@ -45,8 +46,8 @@ export class ColorsController {
     description: 'Return the color with the given ID.',
   })
   @ApiResponse({ status: 404, description: 'Color not found.' })
-  findOne(@Param('id') id: string) {
-    return this.colorsService.findOne(+id);
+  findOne(@Param('id', new ParseUUIDPipe()) id: string) {
+    return this.colorsService.findOne(id);
   }
 
   @Patch(':id')
@@ -57,8 +58,12 @@ export class ColorsController {
   })
   @ApiResponse({ status: 404, description: 'Color not found.' })
   @UseGuards(JwtAuthGuard)
-  update(@Param('id') id: string, @Body() updateColorDto: UpdateColorDto) {
-    return this.colorsService.update(+id, updateColorDto);
+  update(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() updateColorDto: UpdateColorDto,
+  ) {
+    // Add ParseUUIDPipe
+    return this.colorsService.update(id, updateColorDto);
   }
 
   @Delete(':id')
@@ -69,7 +74,8 @@ export class ColorsController {
   })
   @ApiResponse({ status: 404, description: 'Color not found.' })
   @UseGuards(JwtAuthGuard)
-  remove(@Param('id') id: string) {
-    return this.colorsService.remove(+id);
+  remove(@Param('id', new ParseUUIDPipe()) id: string) {
+    // Add ParseUUIDPipe
+    return this.colorsService.remove(id);
   }
 }

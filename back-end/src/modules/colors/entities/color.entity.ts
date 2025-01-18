@@ -1,16 +1,26 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from '../../users/entities/user.entity';
+import { IsBoolean, IsHexColor, IsNotEmpty, IsString } from 'class-validator';
 
 @Entity()
 export class Color {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-  @Column()
+  @Column({ unique: true, nullable: false })
+  @IsString()
+  @IsNotEmpty()
   name: string;
 
-  @Column()
+  @Column({ unique: true, nullable: false })
+  @IsHexColor()
+  @IsNotEmpty()
   hex_code: string;
 
   @Column({ default: true })
+  @IsBoolean()
   active: boolean;
+
+  @OneToMany(() => User, (user) => user.favoriteColor)
+  users: User[];
 }

@@ -7,16 +7,17 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
+import { Color } from '../colors/entities/color.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
-import { FavoriteColor } from './enums/favorite-color.enum';
 import { UserRoles } from './enums/user-roles.enum';
 import { UsersService } from './users.service';
 
 describe('UsersService', () => {
   let service: UsersService;
   let repository: Repository<User>;
+  let colorsRepository: Repository<Color>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -26,11 +27,16 @@ describe('UsersService', () => {
           provide: getRepositoryToken(User),
           useClass: Repository,
         },
+        {
+          provide: getRepositoryToken(Color),
+          useClass: Repository,
+        },
       ],
     }).compile();
 
     service = module.get<UsersService>(UsersService);
     repository = module.get<Repository<User>>(getRepositoryToken(User));
+    colorsRepository = module.get<Repository<Color>>(getRepositoryToken(Color));
   });
 
   it('should be defined', () => {
@@ -40,9 +46,9 @@ describe('UsersService', () => {
   it('should create a user', async () => {
     const createUserDto: CreateUserDto = {
       fullName: 'John Doe',
-      cpf: '12345678909', // Valid CPF
+      cpf: '12345678909',
       email: 'john@example.com',
-      favoriteColor: FavoriteColor.BLUE,
+      favoriteColorId: 'some-color-id',
       notes: 'Test note',
       role: UserRoles.USER,
       password: 'password',
@@ -50,7 +56,9 @@ describe('UsersService', () => {
     const user = new User();
     Object.assign(user, createUserDto);
 
+    const color = new Color();
     jest.spyOn(repository, 'findOne').mockResolvedValue(null);
+    jest.spyOn(colorsRepository, 'findOne').mockResolvedValue(color);
     jest.spyOn(repository, 'create').mockReturnValue(user);
     jest.spyOn(repository, 'save').mockResolvedValue(user);
 
@@ -60,9 +68,9 @@ describe('UsersService', () => {
   it('should create an admin user with password', async () => {
     const createUserDto: CreateUserDto = {
       fullName: 'Admin User',
-      cpf: '12345678909', // Valid CPF
+      cpf: '12345678909',
       email: 'admin@example.com',
-      favoriteColor: FavoriteColor.BLUE,
+      favoriteColorId: 'some-color-id',
       notes: 'Admin note',
       role: UserRoles.ADMIN,
       password: 'adminpassword',
@@ -70,7 +78,9 @@ describe('UsersService', () => {
     const user = new User();
     Object.assign(user, createUserDto);
 
+    const color = new Color();
     jest.spyOn(repository, 'findOne').mockResolvedValue(null);
+    jest.spyOn(colorsRepository, 'findOne').mockResolvedValue(color);
     jest.spyOn(repository, 'create').mockReturnValue(user);
     jest.spyOn(repository, 'save').mockResolvedValue(user);
 
@@ -80,9 +90,9 @@ describe('UsersService', () => {
   it('should create a regular user without password', async () => {
     const createUserDto: CreateUserDto = {
       fullName: 'Regular User',
-      cpf: '12345678909', // Valid CPF
+      cpf: '12345678909',
       email: 'user@example.com',
-      favoriteColor: FavoriteColor.BLUE,
+      favoriteColorId: 'some-color-id',
       notes: 'User note',
       role: UserRoles.USER,
       password: 'userpassword',
@@ -91,7 +101,9 @@ describe('UsersService', () => {
     Object.assign(user, createUserDto);
     user.password = '';
 
+    const color = new Color();
     jest.spyOn(repository, 'findOne').mockResolvedValue(null);
+    jest.spyOn(colorsRepository, 'findOne').mockResolvedValue(color);
     jest.spyOn(repository, 'create').mockReturnValue(user);
     jest.spyOn(repository, 'save').mockResolvedValue(user);
 
@@ -101,9 +113,9 @@ describe('UsersService', () => {
   it('should throw ConflictException if email already in use', async () => {
     const createUserDto: CreateUserDto = {
       fullName: 'Duplicate User',
-      cpf: '12345678909', // Valid CPF
+      cpf: '12345678909',
       email: 'duplicate@example.com',
-      favoriteColor: FavoriteColor.BLUE,
+      favoriteColorId: 'some-color-id',
       notes: 'Duplicate note',
       role: UserRoles.USER,
       password: 'password',
@@ -119,7 +131,7 @@ describe('UsersService', () => {
       fullName: 'Invalid CPF User',
       cpf: 'invalid-cpf',
       email: 'invalidcpf@example.com',
-      favoriteColor: FavoriteColor.BLUE,
+      favoriteColorId: 'some-color-id',
       notes: 'Invalid CPF note',
       role: UserRoles.USER,
       password: 'password',
@@ -132,9 +144,9 @@ describe('UsersService', () => {
   it('should throw ConflictException if CPF already in use', async () => {
     const createUserDto: CreateUserDto = {
       fullName: 'Duplicate CPF User',
-      cpf: '12345678909', // Valid CPF
+      cpf: '12345678909',
       email: 'duplicatecpf@example.com',
-      favoriteColor: FavoriteColor.BLUE,
+      favoriteColorId: 'some-color-id',
       notes: 'Duplicate CPF note',
       role: UserRoles.USER,
       password: 'password',

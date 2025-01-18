@@ -1,7 +1,6 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsEnum, IsOptional } from 'class-validator';
-import { FavoriteColor } from '../enums/favorite-color.enum';
+import { IsEmail, IsEnum, IsOptional, IsUUID } from 'class-validator';
 import { UserRoles } from '../enums/user-roles.enum';
 import { CreateUserDto } from './create-user.dto';
 
@@ -17,8 +16,9 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   @ApiProperty()
   email?: string;
 
-  @ApiProperty({ enum: FavoriteColor })
-  favoriteColor?: FavoriteColor;
+  @ApiProperty()
+  @IsUUID()
+  favoriteColorId?: string;
 
   @ApiProperty()
   notes?: string;

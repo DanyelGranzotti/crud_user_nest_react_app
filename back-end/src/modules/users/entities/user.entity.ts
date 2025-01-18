@@ -1,8 +1,14 @@
 /**
  * Represents a user record in the database.
  */
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { FavoriteColor } from '../enums/favorite-color.enum';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Color } from '../../colors/entities/color.entity';
 import { UserRoles } from '../enums/user-roles.enum';
 
 @Entity()
@@ -19,11 +25,9 @@ export class User {
   @Column({ unique: true })
   email: string;
 
-  @Column({
-    type: 'enum',
-    enum: FavoriteColor,
-  })
-  favoriteColor: FavoriteColor;
+  @ManyToOne(() => Color, { eager: true })
+  @JoinColumn({ name: 'favoriteColorId' })
+  favoriteColor: Color;
 
   @Column()
   notes: string;

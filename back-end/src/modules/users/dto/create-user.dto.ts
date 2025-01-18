@@ -4,9 +4,9 @@ import {
   IsEnum,
   IsNotEmpty,
   IsOptional,
+  IsUUID,
   Matches,
 } from 'class-validator';
-import { FavoriteColor } from '../enums/favorite-color.enum';
 import { UserRoles } from '../enums/user-roles.enum';
 
 export class CreateUserDto {
@@ -22,9 +22,6 @@ export class CreateUserDto {
   @IsEmail()
   email: string;
 
-  @ApiProperty({ enum: FavoriteColor })
-  favoriteColor: FavoriteColor;
-
   @ApiProperty()
   notes: string;
 
@@ -35,4 +32,8 @@ export class CreateUserDto {
   @ApiProperty({ required: false })
   @IsOptional()
   password: string;
+
+  @ApiProperty()
+  @IsUUID()
+  favoriteColorId: string;
 }

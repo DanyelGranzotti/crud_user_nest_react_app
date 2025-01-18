@@ -5,11 +5,13 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { DataSource } from 'typeorm';
 import { AppModule } from './app.module';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { ColorsSeeder } from './modules/colors/colors.seeder';
 import { UsersSeeder } from './modules/users/users.seeder';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.useGlobalFilters(new HttpExceptionFilter());
 
   const config = new DocumentBuilder()
     .setTitle('User API')
@@ -31,10 +33,10 @@ async function bootstrap() {
     ? console.log('Database connection established')
     : console.log('Database connection failed');
 
-  const usersSeeder = app.get(UsersSeeder);
-  await usersSeeder.seed();
-
   const colorsSeeder = app.get(ColorsSeeder);
   await colorsSeeder.seed();
+
+  const usersSeeder = app.get(UsersSeeder);
+  await usersSeeder.seed();
 }
 bootstrap();
