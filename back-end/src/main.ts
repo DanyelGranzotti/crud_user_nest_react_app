@@ -11,6 +11,13 @@ import { UsersSeeder } from './modules/users/users.seeder';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  app.enableCors({
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
+
   app.useGlobalFilters(new HttpExceptionFilter());
 
   const config = new DocumentBuilder()

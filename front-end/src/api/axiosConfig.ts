@@ -3,8 +3,11 @@ import axios from "axios";
 import { refreshToken } from "../modules/auth/state/authSlice";
 import { store } from "../state/store";
 
+/**
+ * Configuração do axios com interceptadores para adicionar o token de autenticação e lidar com a atualização do token.
+ */
 const axiosInstance = axios.create({
-  baseURL: "https://api.example.com",
+  baseURL: "http://localhost:3000",
   headers: {
     "Content-Type": "application/json",
   },
@@ -12,7 +15,7 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = store.getState().auth.token;
+    const token = store.getState().rootReducer.auth?.token;
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

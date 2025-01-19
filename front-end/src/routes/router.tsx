@@ -1,7 +1,11 @@
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes } from "react-router-dom";
 import ProtectedRoute from "../modules/auth/components/ProtectedRoute";
-import UserRoutes from '../modules/user/routes/UserRoutes';
+import UserRoutes from "../modules/user/routes/UserRoutes";
 
+/**
+ * Componente que define as rotas da aplicação.
+ * @returns As rotas configuradas.
+ */
 const AppRoutes = () => {
   return (
     <Routes>

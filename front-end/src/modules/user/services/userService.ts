@@ -1,6 +1,6 @@
 import axios from "../../../api/axiosConfig";
 import { API_ENDPOINTS } from "../../../api/endpoints";
-import { User } from "../types/user";
+import { CreateUserDto, User } from "../types/user";
 
 /**
  * Serviço para buscar uma lista de usuários.
@@ -21,7 +21,7 @@ export const getUsers = async (
  * @param userData - Dados do usuário a ser criado.
  * @returns O usuário criado no formato `User`.
  */
-export const createUser = async (userData: User): Promise<User> => {
+export const createUser = async (userData: CreateUserDto): Promise<User> => {
   // Faz uma requisição POST para o endpoint de usuários com os dados fornecidos.
   const response = await axios.post<User>(API_ENDPOINTS.USERS, userData);
   // Retorna o usuário criado.

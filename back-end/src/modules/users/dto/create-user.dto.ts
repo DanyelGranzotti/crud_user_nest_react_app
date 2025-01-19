@@ -23,10 +23,12 @@ export class CreateUserDto {
   email: string;
 
   @ApiProperty()
+  @IsOptional()
   notes: string;
 
   @ApiProperty({ enum: UserRoles, required: false })
   @IsEnum(UserRoles)
+  @IsOptional()
   role: UserRoles = UserRoles.USER;
 
   @ApiProperty({ required: false })

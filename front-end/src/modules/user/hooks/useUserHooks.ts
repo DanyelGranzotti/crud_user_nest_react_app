@@ -6,7 +6,7 @@ import {
   getUsers,
   updateUser,
 } from "../services/userService";
-import { User } from "../types/user";
+import { CreateUserDto, User } from "../types/user";
 
 /**
  * Hook para buscar uma lista de usuários.
@@ -33,7 +33,7 @@ export const useGetUsers = (params: Record<string, any>) => {
  */
 export const useCreateUser = () => {
   const queryClient = useQueryClient(); // Acesso ao cliente do React Query para gerenciar o cache.
-  return useMutation<User, Error, User>({
+  return useMutation<User, Error, CreateUserDto>({
     mutationFn: createUser, // Função que realiza a criação do usuário via API.
     onSuccess: () => {
       // Invalida o cache da lista de usuários após o sucesso.

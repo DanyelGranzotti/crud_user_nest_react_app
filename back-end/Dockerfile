@@ -22,9 +22,13 @@ FROM node:22.13.0-alpine
 # Set the working directory
 WORKDIR /app
 
-# Copy only the necessary files from the builder stage
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/node_modules ./node_modules
+# Copy package.json and package-lock.json
+COPY package*.json ./
+
+# Install only production dependencies
+RUN npm install --only=production
+
+# Copy the built application from the builder stage
 COPY --from=builder /app/dist ./dist
 
 # Expose the application port

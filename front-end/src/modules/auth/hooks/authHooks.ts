@@ -68,5 +68,5 @@ export const useRefreshToken = () => {
  * @returns Booleano indicando se o usuário está autenticado.
  */
 export const useSelectIsAuthenticated = () => {
-  return useSelector((state: RootState) => !!state.auth.token);
+  return useSelector((state: RootState) => !!state.rootReducer.auth.token);
 };
