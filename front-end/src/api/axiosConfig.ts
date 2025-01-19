@@ -7,7 +7,7 @@ import { store } from "../state/store";
  * Configuração do axios com interceptadores para adicionar o token de autenticação e lidar com a atualização do token.
  */
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:3000",
+  baseURL: process.env.API_END_POINT,
   headers: {
     "Content-Type": "application/json",
   },
