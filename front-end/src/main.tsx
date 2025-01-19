@@ -14,6 +14,25 @@ import "./styles/global.css";
 const queryClient = new QueryClient();
 
 /**
+ * Função para aplicar o tema.
+ */
+const applyTheme = (theme: string) => {
+  if (theme === "dark") {
+    document.documentElement.classList.add("dark");
+  } else {
+    document.documentElement.classList.remove("dark");
+  }
+};
+
+/**
+ * Função para aplicar o favicon.
+ */
+const applyFavicon = (theme: string) => {
+  const favicon = document.getElementById("favicon") as HTMLLinkElement;
+  favicon.href = theme === "dark" ? "/svg/logo.svg" : "/svg/dark_logo.svg";
+};
+
+/**
  * Componente principal que aplica o tema e configura o React Query.
  */
 const ThemedApp = () => {
@@ -22,17 +41,17 @@ const ThemedApp = () => {
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
-    if (savedTheme) {
-      dispatch(setTheme(savedTheme));
-    }
+    const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
+      .matches
+      ? "dark"
+      : "light";
+    const initialTheme = savedTheme || systemTheme;
+    dispatch(setTheme(initialTheme));
+    applyFavicon(systemTheme);
   }, [dispatch]);
 
   useEffect(() => {
-    if (theme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
+    applyTheme(theme);
   }, [theme]);
 
   return (
