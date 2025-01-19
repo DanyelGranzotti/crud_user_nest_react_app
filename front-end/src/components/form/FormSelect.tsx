@@ -11,6 +11,7 @@ interface FormSelectProps {
   errorMessage: string;
   options: { id: string; name: string }[];
   theme: string;
+  placeholder: string;
 }
 
 /**
@@ -24,6 +25,7 @@ interface FormSelectProps {
  * @param errorMessage - Mensagem de erro a ser exibida.
  * @param options - Opções de seleção.
  * @param theme - Tema do componente.
+ * @param placeholder - Texto de orientação do campo.
  */
 export const FormSelect: React.FC<FormSelectProps> = ({
   controlId,
@@ -35,6 +37,7 @@ export const FormSelect: React.FC<FormSelectProps> = ({
   errorMessage,
   options = [],
   theme,
+  placeholder,
 }) => {
   // Usamos casting para alinhar o tipo do evento
   const handleSelectChange = (
@@ -57,7 +60,7 @@ export const FormSelect: React.FC<FormSelectProps> = ({
           theme === "dark" ? "bg-form-darkgray text-white border-form-gray" : ""
         }
       >
-        <option value="">Select a color</option>
+        <option value="">{placeholder}</option>
         {options.length > 0 ? (
           options.map((option) => (
             <option key={option.id} value={option.id}>
@@ -66,7 +69,7 @@ export const FormSelect: React.FC<FormSelectProps> = ({
           ))
         ) : (
           <option value="" disabled>
-            No options available
+            Não há opções disponíveis
           </option>
         )}
       </Form.Control>

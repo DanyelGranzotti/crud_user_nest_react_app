@@ -1,5 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import FormSubmit from "../views/FormSubmit";
+import SuccessSubmit from "../views/SuccessSubmit";
 
 /**
  * Componente de rotas para o módulo de usuário.
@@ -7,8 +8,8 @@ import FormSubmit from "../views/FormSubmit";
 const UserRoutes = () => {
   return (
     <Routes>
-      <Route path="/example" element={<div>Example Module</div>} />
       <Route path="/form" element={<FormSubmit />} />
+      <Route path="/form/success" element={<SuccessSubmit />} />
       <Route path="/login" element={<div>Login</div>} />
     </Routes>
   );

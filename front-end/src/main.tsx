@@ -8,7 +8,7 @@ import AppRoutes from "./routes/router";
 import { RootState, store } from "./state/store";
 
 import "bootstrap/dist/css/bootstrap.min.css";
-import { toggleTheme } from "./state/global/themeSlice";
+import { setTheme, toggleTheme } from "./state/global/themeSlice";
 import "./styles/global.css";
 
 const queryClient = new QueryClient();
@@ -19,6 +19,13 @@ const queryClient = new QueryClient();
 const ThemedApp = () => {
   const theme = useSelector((state: RootState) => state.theme.theme);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme) {
+      dispatch(setTheme(savedTheme));
+    }
+  }, [dispatch]);
 
   useEffect(() => {
     if (theme === "dark") {

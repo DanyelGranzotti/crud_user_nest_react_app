@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FormInput } from "../../../components/form/FormInput";
@@ -28,6 +29,7 @@ const FormSubmit = () => {
   const createUserMutation = useCreateUser();
   const { data: colors } = useGetColors({});
   const theme = useSelector((state: RootState) => state.theme.theme);
+  const navigate = useNavigate();
 
   /**
    * Manipula a mudança de valor dos campos do formulário.
@@ -60,6 +62,7 @@ const FormSubmit = () => {
     try {
       await createUserMutation.mutateAsync(payload);
       toast.success("Usuário criado com sucesso!");
+      navigate("/form/success");
     } catch (error: any) {
       const errorMessage = error.response?.data?.message;
       if (error.response?.status === 409) {
@@ -85,7 +88,7 @@ const FormSubmit = () => {
         <img
           src={theme === "dark" ? "/svg/logo.svg" : "/svg/dark_logo.svg"}
           alt=""
-          className="w-50"
+          className="w-1/2"
         />
       </div>
       <div className="flex w-full flex-col gap-10 p-5 sm:p-0">
@@ -131,7 +134,7 @@ const FormSubmit = () => {
           />
           <FormSelect
             controlId="formFavoriteColor"
-            label="Favorite Color"
+            label="Cor Favorita"
             name="favoriteColor"
             value={formData.favoriteColor.id}
             onChange={(e) =>
@@ -147,6 +150,7 @@ const FormSubmit = () => {
             errorMessage={errors.favoriteColor}
             options={colors || []}
             theme={theme}
+            placeholder="Selecione uma cor"
           />
           <Button variant="primary" type="submit" className="w-20">
             Submit
