@@ -1,34 +1,26 @@
-# Use a lightweight Node.js image
-FROM node:22.13.0-alpine as builder
+# syntax=docker/dockerfile:1.3-labs
+# Enable Docker BuildKit
+# Use a lightweight Node.js image for building
+FROM node:22.13.0-alpine AS build
 
-# Set the working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json
 COPY package*.json ./
+RUN npm install --frozen-lockfile
 
-# Install dependencies
-RUN npm install
-
-# Copy the rest of the application code
 COPY . .
-
-# Build the application
 RUN npm run build
 
-# Use a separate stage for the final image
+# Use a lightweight Node.js image for running
 FROM node:22.13.0-alpine
 
-# Set the working directory
 WORKDIR /app
 
-# Copy only the necessary files from the builder stage
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/dist ./dist
+COPY package*.json ./
+RUN npm install --only=production --frozen-lockfile
 
-# Expose the application port
+COPY --from=build /app/dist ./dist
+
 EXPOSE 3000
 
-# Start the application
 CMD ["npm", "run", "start:prod"]

@@ -10,8 +10,8 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Color } from '../../colors/entities/color.entity';
-import { UserRoles } from '../enums/user-roles.enum';
 import { Note } from '../../notes/entities/note.entity';
+import { UserRoles } from '../enums/user-roles.enum';
 
 @Entity()
 export class User {

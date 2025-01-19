@@ -65,13 +65,16 @@ export class UsersService {
       throw new BadRequestException('Favorite color not found');
     }
 
-    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+    let hashedPassword = null;
+    if (createUserDto.password) {
+      hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+    }
 
     const newUser: User = this.usersRepository.create({
       ...createUserDto,
       favoriteColor,
       password: hashedPassword,
-      notes: [], // Ensure notes is an empty array initially
+      notes: [],
     });
     return this.usersRepository.save(newUser);
   }
