@@ -69,7 +69,7 @@ const FormSubmit = () => {
     try {
       await createUserMutation.mutateAsync(payload);
       toast.success("Formulário enviado com sucesso!");
-      navigate("/form/success");
+      navigate("/user/form/success");
     } catch (error: any) {
       const errorMessage = error.response?.data?.message;
       if (error.response?.status === 409) {

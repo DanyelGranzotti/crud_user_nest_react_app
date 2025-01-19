@@ -15,15 +15,15 @@ export const useLogin = () => {
 
   return useMutation<Credential, Error, Credential>({
     mutationFn: async (credentials: Credential) => {
-      const data = await loginService(credentials); // Chamada ao serviço
-      dispatch(login(data)); // Atualiza o estado global
-      return credentials; // Retorna as credenciais para corresponder ao tipo esperado
+      const data = await loginService(credentials);
+      dispatch(login(data));
+      return credentials;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["auth"] });
     },
     onError: (error: Error) => {
-      console.error("Error logging in:", error); // Loga o erro no console.
+      console.error("Error logging in:", error);
     },
   });
 };
@@ -36,7 +36,7 @@ export const useLogout = () => {
   const dispatch = useAppDispatch();
 
   return () => {
-    dispatch(logout()); // Despacha a ação de logout
+    dispatch(logout());
   };
 };
 
@@ -50,15 +50,15 @@ export const useRefreshToken = () => {
 
   return useMutation<{ token: string }, Error, void>({
     mutationFn: async () => {
-      const data = await refreshTokenService(); // Chamada ao serviço
-      dispatch(refreshToken()); // Atualiza o token no estado global
+      const data = await refreshTokenService();
+      dispatch(refreshToken());
       return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["auth"] });
     },
     onError: (error: Error) => {
-      console.error("Error refreshing token:", error); // Loga o erro no console.
+      console.error("Error refreshing token:", error);
     },
   });
 };

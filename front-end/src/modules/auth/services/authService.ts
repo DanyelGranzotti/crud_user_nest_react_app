@@ -1,6 +1,5 @@
 import axios from "axios";
 import { API_ENDPOINTS } from "../../../api/endpoints";
-import { User } from "../../user/types/user";
 
 /**
  * Serviço para realizar login.
@@ -8,11 +7,11 @@ import { User } from "../../user/types/user";
  * @returns Dados do token e do usuário autenticado.
  */
 export const loginService = async (credentials: {
-  login: string;
+  email: string;
   password: string;
 }) => {
-  const response = await axios.post<{ token: string; user: User }>(
-    API_ENDPOINTS.AUTH.LOGIN,
+  const response = await axios.post<{ token: string }>(
+    `${process.env.API_END_POINT}${API_ENDPOINTS.AUTH.LOGIN}`,
     credentials
   );
   return response.data;
@@ -24,7 +23,7 @@ export const loginService = async (credentials: {
  */
 export const refreshTokenService = async () => {
   const response = await axios.post<{ token: string }>(
-    API_ENDPOINTS.AUTH.REFRESH
+    `${process.env.API_END_POINT}${API_ENDPOINTS.AUTH.REFRESH}`
   );
   return response.data;
 };

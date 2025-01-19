@@ -10,9 +10,7 @@ import { CreateUserDto, User } from "../types/user";
 export const getUsers = async (
   params: Record<string, any>
 ): Promise<User[]> => {
-  // Faz uma requisição GET para o endpoint de usuários com os parâmetros fornecidos.
   const response = await axios.get<User[]>(API_ENDPOINTS.USERS, { params });
-  // Retorna apenas os dados da resposta.
   return response.data;
 };
 
@@ -22,9 +20,7 @@ export const getUsers = async (
  * @returns O usuário criado no formato `User`.
  */
 export const createUser = async (userData: CreateUserDto): Promise<User> => {
-  // Faz uma requisição POST para o endpoint de usuários com os dados fornecidos.
   const response = await axios.post<User>(API_ENDPOINTS.USERS, userData);
-  // Retorna o usuário criado.
   return response.data;
 };
 
@@ -38,12 +34,10 @@ export const updateUser = async (
   userId: string,
   userData: Partial<User>
 ): Promise<User> => {
-  // Faz uma requisição PATCH para o endpoint específico do usuário.
   const response = await axios.patch<User>(
     `${API_ENDPOINTS.USERS}/${userId}`,
     userData
   );
-  // Retorna o usuário atualizado.
   return response.data;
 };
 
@@ -53,9 +47,7 @@ export const updateUser = async (
  * @returns Uma promessa resolvida quando o usuário for excluído.
  */
 export const deleteUser = async (userId: string): Promise<void> => {
-  // Faz uma requisição DELETE para o endpoint específico do usuário.
   await axios.delete(`${API_ENDPOINTS.USERS}/${userId}`);
-  // Sem retorno de dados, apenas resolução da promessa.
 };
 
 /**
@@ -64,8 +56,6 @@ export const deleteUser = async (userId: string): Promise<void> => {
  * @returns O usuário no formato `User`.
  */
 export const getUserById = async (userId: string): Promise<User> => {
-  // Faz uma requisição GET para o endpoint específico do usuário.
   const response = await axios.get<User>(`${API_ENDPOINTS.USERS}/${userId}`);
-  // Retorna os dados do usuário.
   return response.data;
 };

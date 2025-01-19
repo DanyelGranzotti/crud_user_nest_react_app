@@ -39,7 +39,6 @@ export const FormSelect: React.FC<FormSelectProps> = ({
   theme,
   placeholder,
 }) => {
-  // Usamos casting para alinhar o tipo do evento
   const handleSelectChange = (
     e: React.ChangeEvent<HTMLSelectElement> | React.ChangeEvent<any>
   ) => {

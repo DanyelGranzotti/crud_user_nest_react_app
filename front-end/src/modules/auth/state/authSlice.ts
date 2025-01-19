@@ -42,9 +42,8 @@ const authSlice = createSlice({
      * @param state - Estado atual.
      * @param action - Ação contendo o token e o usuário.
      */
-    login(state, action: PayloadAction<{ token: string; user: User }>) {
+    login(state, action: PayloadAction<{ token: string }>) {
       state.token = action.payload.token;
-      state.user = action.payload.user;
     },
     /**
      * Ação para realizar logout.

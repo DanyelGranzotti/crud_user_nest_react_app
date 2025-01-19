@@ -45,7 +45,7 @@ export class UsersService {
   }
 
   isAuthenticated(): boolean {
-    // Implement your authentication logic here
+    // TODO: Implement actual authentication check
     return true; // Placeholder, replace with actual authentication check
   }
 

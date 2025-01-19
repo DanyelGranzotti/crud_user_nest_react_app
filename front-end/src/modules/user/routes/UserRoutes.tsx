@@ -8,9 +8,8 @@ import SuccessSubmit from "../views/SuccessSubmit";
 const UserRoutes = () => {
   return (
     <Routes>
-      <Route path="/form" element={<FormSubmit />} />
-      <Route path="/form/success" element={<SuccessSubmit />} />
-      <Route path="/login" element={<div>Login</div>} />
+      <Route path="form" element={<FormSubmit />} />
+      <Route path="form/success" element={<SuccessSubmit />} />
     </Routes>
   );
 };

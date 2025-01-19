@@ -86,7 +86,6 @@ describe('UsersService', () => {
     jest.spyOn(repository, 'create').mockReturnValue(user);
     jest.spyOn(repository, 'save').mockResolvedValue(user);
 
-    // Simulate authenticated user
     jest.spyOn(service, 'isAuthenticated').mockReturnValue(true);
 
     expect(await service.create(createUserDto)).toEqual(user);
@@ -103,7 +102,6 @@ describe('UsersService', () => {
       password: 'adminpassword',
     };
 
-    // Simulate unauthenticated user
     jest.spyOn(service, 'isAuthenticated').mockReturnValue(false);
 
     await expect(service.create(createUserDto)).rejects.toThrow(
@@ -122,7 +120,6 @@ describe('UsersService', () => {
       password: 'adminpassword',
     };
 
-    // Simulate unauthenticated user
     jest.spyOn(service, 'isAuthenticated').mockReturnValue(false);
 
     await expect(service.create(createUserDto)).rejects.toThrow(

@@ -1,23 +1,20 @@
 import { Route, Routes } from "react-router-dom";
-import ProtectedRoute from "../modules/auth/components/ProtectedRoute";
+import AuthRoutes from "../modules/auth/routes/AuthRoutes";
 import UserRoutes from "../modules/user/routes/UserRoutes";
+import Maintenance from "../views/Maintenance";
+import NotFound from "../views/NotFound";
 
 /**
- * Componente que define as rotas da aplicação.
+ * Componente que define as rotas principais da aplicação.
  * @returns As rotas configuradas.
  */
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path="/*" element={<UserRoutes />} />
-      <Route
-        path="/example-protection"
-        element={
-          <ProtectedRoute>
-            <div>Example Module</div>
-          </ProtectedRoute>
-        }
-      />
+      <Route path="/auth/*" element={<AuthRoutes />} />
+      <Route path="/user/*" element={<UserRoutes />} />
+      <Route path="/maintenance" element={<Maintenance />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };

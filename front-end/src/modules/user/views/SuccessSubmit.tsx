@@ -31,7 +31,7 @@ const SuccessSubmit = () => {
       </div>
       <Button
         variant="secondary"
-        onClick={() => navigate("/form")}
+        onClick={() => navigate("/user/form")}
         className="sm:max-w-44 sm:w-full w-1/2 text-sm"
       >
         Voltar para formulário

@@ -15,13 +15,13 @@ import { Color } from "../types/color";
  */
 export const useGetColors = (params: Record<string, any>) => {
   return useQuery({
-    queryKey: ["colors", params], // Identificador único para o cache baseado nos parâmetros.
+    queryKey: ["colors", params],
     queryFn: async () => {
       try {
-        return await getColors(params); // Chama o serviço para buscar as cores.
+        return await getColors(params);
       } catch (error) {
-        console.error("Error fetching colors:", error); // Loga erros no console.
-        throw error; // Repassa o erro para o React Query tratar.
+        console.error("Error fetching colors:", error);
+        throw error;
       }
     },
   });
@@ -32,15 +32,14 @@ export const useGetColors = (params: Record<string, any>) => {
  * @returns Função de mutação para criar a cor.
  */
 export const useCreateColor = () => {
-  const queryClient = useQueryClient(); // Acesso ao cliente do React Query para gerenciar o cache.
+  const queryClient = useQueryClient();
   return useMutation<Color, Error, Omit<Color, "id">>({
-    mutationFn: createColor, // Função que realiza a criação da cor via API.
+    mutationFn: createColor,
     onSuccess: () => {
-      // Invalida o cache da lista de cores após o sucesso.
       queryClient.invalidateQueries({ queryKey: ["colors"] });
     },
     onError: (error: Error) => {
-      console.error("Error creating color:", error); // Loga o erro no console.
+      console.error("Error creating color:", error);
     },
   });
 };
@@ -50,19 +49,18 @@ export const useCreateColor = () => {
  * @returns Função de mutação para atualizar a cor.
  */
 export const useUpdateColor = () => {
-  const queryClient = useQueryClient(); // Acesso ao cliente do React Query para gerenciar o cache.
+  const queryClient = useQueryClient();
   return useMutation<
     Color,
     Error,
     { colorId: string; colorData: Partial<Color> }
   >({
-    mutationFn: ({ colorId, colorData }) => updateColor(colorId, colorData), // Atualiza a cor com base no ID e nos dados fornecidos.
+    mutationFn: ({ colorId, colorData }) => updateColor(colorId, colorData),
     onSuccess: () => {
-      // Invalida o cache da lista de cores após a atualização.
       queryClient.invalidateQueries({ queryKey: ["colors"] });
     },
     onError: (error: Error) => {
-      console.error("Error updating color:", error); // Loga o erro no console.
+      console.error("Error updating color:", error);
     },
   });
 };
@@ -72,15 +70,14 @@ export const useUpdateColor = () => {
  * @returns Função de mutação para deletar a cor.
  */
 export const useDeleteColor = () => {
-  const queryClient = useQueryClient(); // Acesso ao cliente do React Query para gerenciar o cache.
+  const queryClient = useQueryClient();
   return useMutation<void, Error, string>({
-    mutationFn: deleteColor, // Função que realiza a exclusão da cor via API.
+    mutationFn: deleteColor,
     onSuccess: () => {
-      // Invalida o cache da lista de cores após a exclusão.
       queryClient.invalidateQueries({ queryKey: ["colors"] });
     },
     onError: (error: Error) => {
-      console.error("Error deleting color:", error); // Loga o erro no console.
+      console.error("Error deleting color:", error);
     },
   });
 };
@@ -92,13 +89,13 @@ export const useDeleteColor = () => {
  */
 export const useGetColorById = (colorId: string) => {
   return useQuery({
-    queryKey: ["color", colorId], // Identificador único para o cache baseado no ID da cor.
+    queryKey: ["color", colorId],
     queryFn: async () => {
       try {
-        return await getColorById(colorId); // Chama o serviço para buscar a cor pelo ID.
+        return await getColorById(colorId);
       } catch (error) {
-        console.error("Error fetching color by ID:", error); // Loga erros no console.
-        throw error; // Repassa o erro para o React Query tratar.
+        console.error("Error fetching color by ID:", error);
+        throw error;
       }
     },
   });

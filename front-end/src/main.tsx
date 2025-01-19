@@ -1,10 +1,11 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { StrictMode, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import FloatingButton from "./components/theme/FloatingButton";
+import { createQueryClient } from "./hooks/useQuery";
 import AppRoutes from "./routes/router";
 import { RootState, store } from "./state/store";
 
@@ -12,7 +13,11 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { setTheme } from "./state/global/themeSlice";
 import "./styles/global.css";
 
-const queryClient = new QueryClient();
+const navigate = (path: string) => {
+  window.location.href = path;
+};
+
+const queryClient = createQueryClient(navigate);
 
 /**
  * Função para aplicar o tema.
@@ -83,8 +88,6 @@ const ThemedApp = () => {
 const Root = () => (
   <StrictMode>
     <Provider store={store}>
-      <link rel="dns-prefetch" href="//example.com" />
-      <link rel="preconnect" href="//example.com" />
       <ThemedApp />
     </Provider>
   </StrictMode>
