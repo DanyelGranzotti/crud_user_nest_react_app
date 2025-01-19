@@ -38,6 +38,18 @@ services:
       - postgres
     restart: always
 
+  front:
+    build:
+      context: ./front-end
+      dockerfile: ./Dockerfile
+    environment:
+      - API_END_POINT=http://app:3000
+    ports:
+      - "80:80"
+    depends_on:
+      - app
+    restart: always
+
 volumes:
   postgres_data:
 
