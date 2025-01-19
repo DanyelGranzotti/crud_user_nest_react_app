@@ -82,6 +82,8 @@ const ThemedApp = () => {
 const Root = () => (
   <StrictMode>
     <Provider store={store}>
+      <link rel="dns-prefetch" href="//example.com" />
+      <link rel="preconnect" href="//example.com" />
       <ThemedApp />
     </Provider>
   </StrictMode>
