@@ -94,7 +94,7 @@ const FormSubmit = () => {
         </h1>
         <img
           src={theme === "dark" ? "/svg/logo.svg" : "/svg/dark_logo.svg"}
-          alt=""
+          alt="Logo"
           className="w-1/2"
         />
       </div>

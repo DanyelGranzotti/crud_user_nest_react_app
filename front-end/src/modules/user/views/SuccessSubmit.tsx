@@ -17,7 +17,7 @@ const SuccessSubmit = () => {
       <div className="flex flex-col w-full gap-5 justify-center items-center">
         <img
           src={theme === "dark" ? "/svg/logo.svg" : "/svg/dark_logo.svg"}
-          alt=""
+          alt="Logo"
           className="sm:w-1/12 w-1/2"
         />
       </div>

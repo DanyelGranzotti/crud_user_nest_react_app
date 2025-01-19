@@ -15,7 +15,7 @@ export const createQueryClient = (
   navigate: (path: string) => void
 ): QueryClient => {
   const queryCache = new QueryCache({
-    onError: (error, query) => {
+    onError: (error) => {
       if (isOfflineError(error)) {
         navigate("/maintenance");
       }
@@ -23,7 +23,7 @@ export const createQueryClient = (
   });
 
   const mutationCache = new MutationCache({
-    onError: (error, variables, context, mutation) => {
+    onError: (error) => {
       if (isOfflineError(error)) {
         navigate("/maintenance");
       }
