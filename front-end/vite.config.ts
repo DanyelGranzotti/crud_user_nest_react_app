@@ -7,6 +7,9 @@ export default defineConfig(({ mode }) => {
     define: {
       "process.env.API_END_POINT": JSON.stringify(env.API_END_POINT),
       "process.env.RECAPTCHA_SITE_KEY": JSON.stringify(env.RECAPTCHA_SITE_KEY),
+      "process.env.REACT_APP_ENCRYPTION_KEY": JSON.stringify(
+        env.REACT_APP_ENCRYPTION_KEY
+      ),
     },
     plugins: [react()],
   };

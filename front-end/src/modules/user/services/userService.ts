@@ -1,16 +1,16 @@
 import axios from "../../../api/axiosConfig";
 import { API_ENDPOINTS } from "../../../api/endpoints";
-import { CreateUserDto, User } from "../types/user";
+import { CreateUserDto, User, UserList } from "../types/user";
 
 /**
  * Serviço para buscar uma lista de usuários.
  * @param params - Parâmetros de filtro ou paginação para a API.
- * @returns Uma lista de usuários do tipo `User[]`.
+ * @returns Uma lista de usuários do tipo `UserList`.
  */
 export const getUsers = async (
   params: Record<string, any>
-): Promise<User[]> => {
-  const response = await axios.get<User[]>(API_ENDPOINTS.USERS, { params });
+): Promise<UserList> => {
+  const response = await axios.get<UserList>(API_ENDPOINTS.USERS, { params });
   return response.data;
 };
 

@@ -15,7 +15,7 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = store.getState().rootReducer.auth?.token;
+    const token = store.getState().auth.access_token;
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -32,7 +32,7 @@ axiosInstance.interceptors.response.use(
 
       const result = await store.dispatch(refreshToken());
       const data = unwrapResult(result);
-      const newToken = data.token;
+      const newToken = data.access_token;
 
       error.config.headers.Authorization = `Bearer ${newToken}`;
       return axiosInstance(error.config);

@@ -4,6 +4,8 @@ import Header from "../../../components/layout/Header";
  * Componente de dashboard.
  */
 const Dashboard = () => {
+  // const { data: users, isLoading, error } = useGetUsers({});
+
   return (
     <>
       <Header />
