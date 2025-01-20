@@ -3,7 +3,7 @@ import { Form } from "react-bootstrap";
 
 interface FormInputProps {
   controlId: string;
-  label: string;
+  label?: string;
   type: string;
   name: string;
   value: string;
@@ -37,7 +37,7 @@ export const FormInput: React.FC<FormInputProps> = ({
   theme,
 }) => (
   <Form.Group controlId={controlId} className="mb-3">
-    <Form.Label>{label}</Form.Label>
+    {label && <Form.Label>{label}</Form.Label>}
     <Form.Control
       type={type}
       name={name}

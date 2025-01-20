@@ -5,6 +5,13 @@ import { UserRoles } from "./enums/user-roles.enum";
 /**
  * Interface para o usuário.
  */
+export interface UserList {
+  data: User[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
 export interface User {
   id: string;
   fullName: string;

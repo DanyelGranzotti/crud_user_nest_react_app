@@ -2,7 +2,7 @@ import { Button } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
-import { RootState } from "../../../state/store";
+import { RootState } from "../../../state/rootReducer";
 
 /**
  * Componente de tela de sucesso de submissão do formulário.
@@ -17,7 +17,7 @@ const SuccessSubmit = () => {
       <div className="flex flex-col w-full gap-5 justify-center items-center">
         <img
           src={theme === "dark" ? "/svg/logo.svg" : "/svg/dark_logo.svg"}
-          alt=""
+          alt="Logo"
           className="sm:w-1/12 w-1/2"
         />
       </div>
@@ -31,7 +31,7 @@ const SuccessSubmit = () => {
       </div>
       <Button
         variant="secondary"
-        onClick={() => navigate("/form")}
+        onClick={() => navigate("/user/form")}
         className="sm:max-w-44 sm:w-full w-1/2 text-sm"
       >
         Voltar para formulário

@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -9,7 +10,13 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
@@ -19,6 +26,7 @@ import { NotesService } from './notes.service';
 @ApiTags('notes')
 @Controller('notes')
 @UseGuards(JwtAuthGuard)
+@ApiBearerAuth('access-token')
 export class NotesController {
   constructor(private readonly notesService: NotesService) {}
 
@@ -29,18 +37,39 @@ export class NotesController {
     description: 'The note has been successfully created.',
     type: Note,
   })
-  create(
-    @Body() createNoteDto: CreateNoteDto,
-    @Query('userId') userId: string,
-  ) {
+  create(@Body() createNoteDto: CreateNoteDto) {
+    const { userId } = createNoteDto;
+    if (!userId) {
+      throw new BadRequestException('User ID is required');
+    }
     return this.notesService.create(createNoteDto, userId);
   }
 
   @Get()
   @ApiOperation({ summary: 'Get all notes' })
+  @ApiQuery({ name: 'userId', required: false, description: 'ID do usuário' })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'Número da página',
+    example: 1,
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'Limite de itens por página',
+    example: 10,
+  })
   @ApiResponse({ status: 200, description: 'Return all notes.', type: [Note] })
-  findAll() {
-    return this.notesService.findAll();
+  findAll(
+    @Query('userId') userId?: string,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+  ) {
+    if (!userId) {
+      throw new BadRequestException('User ID is required');
+    }
+    return this.notesService.findAll(userId, page, limit);
   }
 
   @Get(':id')
@@ -51,6 +80,9 @@ export class NotesController {
     type: Note,
   })
   findOne(@Param('id') id: string) {
+    if (!id) {
+      throw new BadRequestException('Note ID is required');
+    }
     return this.notesService.findOne(id);
   }
 
@@ -62,6 +94,9 @@ export class NotesController {
     type: Note,
   })
   update(@Param('id') id: string, @Body() updateNoteDto: UpdateNoteDto) {
+    if (!id) {
+      throw new BadRequestException('Note ID is required');
+    }
     return this.notesService.update(id, updateNoteDto);
   }
 
@@ -72,6 +107,9 @@ export class NotesController {
     description: 'The note has been successfully deleted.',
   })
   remove(@Param('id') id: string) {
+    if (!id) {
+      throw new BadRequestException('Note ID is required');
+    }
     return this.notesService.remove(id);
   }
 }

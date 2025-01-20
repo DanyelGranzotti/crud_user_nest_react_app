@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button, Form } from "react-bootstrap";
+import ReCAPTCHA from "react-google-recaptcha";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -7,7 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { FormInput } from "../../../components/form/FormInput";
 import { FormMaskedInput } from "../../../components/form/FormMaskedInput";
 import { FormSelect } from "../../../components/form/FormSelect";
-import { RootState } from "../../../state/store";
+import { RootState } from "../../../state/rootReducer";
 import { useGetColors } from "../../color/hooks/useColorHooks";
 import { useCreateUser } from "../hooks/useUserHooks";
 import {
@@ -25,6 +26,7 @@ import { validateForm } from "../utils/validation";
 const FormSubmit = () => {
   const [formData, setFormData] = useState<UserFormData>(initialFormData);
   const [errors, setErrors] = useState<FormErrors>(initialErrors);
+  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
 
   const createUserMutation = useCreateUser();
   const { data: colors } = useGetColors({});
@@ -46,6 +48,10 @@ const FormSubmit = () => {
    */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!recaptchaToken) {
+      toast.error("Por favor, complete o reCAPTCHA.");
+      return;
+    }
     if (!validateForm(formData, setErrors)) {
       toast.error("Por favor, preencha todos os campos corretamente.");
       return;
@@ -57,12 +63,13 @@ const FormSubmit = () => {
       cpf: sanitizedCpf,
       email: formData.email,
       favoriteColorId: formData.favoriteColor.id,
+      recaptchaToken,
     };
 
     try {
       await createUserMutation.mutateAsync(payload);
-      toast.success("Usuário criado com sucesso!");
-      navigate("/form/success");
+      toast.success("Formulário enviado com sucesso!");
+      navigate("/user/form/success");
     } catch (error: any) {
       const errorMessage = error.response?.data?.message;
       if (error.response?.status === 409) {
@@ -87,7 +94,7 @@ const FormSubmit = () => {
         </h1>
         <img
           src={theme === "dark" ? "/svg/logo.svg" : "/svg/dark_logo.svg"}
-          alt=""
+          alt="Logo"
           className="w-1/2"
         />
       </div>
@@ -152,9 +159,15 @@ const FormSubmit = () => {
             theme={theme}
             placeholder="Selecione uma cor"
           />
-          <Button variant="primary" type="submit" className="w-20">
-            Submit
-          </Button>
+          <div className="flex flex-col gap-5">
+            <ReCAPTCHA
+              sitekey={process.env.RECAPTCHA_SITE_KEY || ""}
+              onChange={(token) => setRecaptchaToken(token)}
+            />
+            <Button variant="primary" type="submit" className="w-20">
+              Enviar
+            </Button>
+          </div>
         </Form>
       </div>
     </div>

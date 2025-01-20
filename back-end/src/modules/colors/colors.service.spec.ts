@@ -74,7 +74,7 @@ describe('ColorsService', () => {
 
     expect(
       await service.findOne('550e8400-e29b-41d4-a716-446655440000'),
-    ).toEqual(color); // Use valid UUID
+    ).toEqual(color);
   });
 
   it('should throw an error if color not found by id', async () => {
@@ -82,7 +82,7 @@ describe('ColorsService', () => {
 
     await expect(
       service.findOne('550e8400-e29b-41d4-a716-446655440000'),
-    ).rejects.toThrow(NotFoundException); // Use valid UUID
+    ).rejects.toThrow(NotFoundException);
   });
 
   it('should update a color', async () => {
@@ -105,7 +105,6 @@ describe('ColorsService', () => {
         updateColorDto,
       ),
     ).toEqual({
-      // Use valid UUID
       ...color,
       ...updateColorDto,
     });
@@ -118,10 +117,7 @@ describe('ColorsService', () => {
 
     await expect(
       service.update('550e8400-e29b-41d4-a716-446655440000', updateColorDto),
-    ).rejects.toThrow(
-      // Use valid UUID
-      NotFoundException,
-    );
+    ).rejects.toThrow(NotFoundException);
   });
 
   it('should deactivate a color instead of deleting', async () => {
@@ -138,7 +134,7 @@ describe('ColorsService', () => {
 
     const deactivatedColor = await service.remove(
       '550e8400-e29b-41d4-a716-446655440000',
-    ); // Use valid UUID
+    );
     expect(deactivatedColor.active).toBe(false);
   });
 
@@ -147,7 +143,7 @@ describe('ColorsService', () => {
 
     await expect(
       service.remove('550e8400-e29b-41d4-a716-446655440000'),
-    ).rejects.toThrow(NotFoundException); // Use valid UUID
+    ).rejects.toThrow(NotFoundException);
   });
 
   it('should throw an error if color is in use by users', async () => {
@@ -161,6 +157,6 @@ describe('ColorsService', () => {
 
     await expect(
       service.remove('550e8400-e29b-41d4-a716-446655440000'),
-    ).rejects.toThrow(BadRequestException); // Use valid UUID
+    ).rejects.toThrow(BadRequestException);
   });
 });

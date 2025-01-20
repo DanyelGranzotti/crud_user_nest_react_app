@@ -10,9 +10,7 @@ import { Color } from "../types/color";
 export const getColors = async (
   params: Record<string, any>
 ): Promise<Color[]> => {
-  // Faz uma requisição GET para o endpoint de cores com os parâmetros fornecidos.
   const response = await axios.get<Color[]>(API_ENDPOINTS.COLORS, { params });
-  // Retorna apenas os dados da resposta.
   return response.data;
 };
 
@@ -24,9 +22,7 @@ export const getColors = async (
 export const createColor = async (
   colorData: Omit<Color, "id">
 ): Promise<Color> => {
-  // Faz uma requisição POST para o endpoint de cores com os dados fornecidos.
   const response = await axios.post<Color>(API_ENDPOINTS.COLORS, colorData);
-  // Retorna a cor criada.
   return response.data;
 };
 
@@ -40,12 +36,10 @@ export const updateColor = async (
   colorId: string,
   colorData: Partial<Color>
 ): Promise<Color> => {
-  // Faz uma requisição PATCH para o endpoint específico da cor.
   const response = await axios.patch<Color>(
     `${API_ENDPOINTS.COLORS}/${colorId}`,
     colorData
   );
-  // Retorna a cor atualizada.
   return response.data;
 };
 
@@ -55,9 +49,7 @@ export const updateColor = async (
  * @returns Uma promessa resolvida quando a cor for excluída.
  */
 export const deleteColor = async (colorId: string): Promise<void> => {
-  // Faz uma requisição DELETE para o endpoint específico da cor.
   await axios.delete(`${API_ENDPOINTS.COLORS}/${colorId}`);
-  // Sem retorno de dados, apenas resolução da promessa.
 };
 
 /**
@@ -66,8 +58,6 @@ export const deleteColor = async (colorId: string): Promise<void> => {
  * @returns A cor no formato `Color`.
  */
 export const getColorById = async (colorId: string): Promise<Color> => {
-  // Faz uma requisição GET para o endpoint específico da cor.
   const response = await axios.get<Color>(`${API_ENDPOINTS.COLORS}/${colorId}`);
-  // Retorna os dados da cor.
   return response.data;
 };

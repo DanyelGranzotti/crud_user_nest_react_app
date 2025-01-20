@@ -45,7 +45,7 @@ export class UsersService {
   }
 
   isAuthenticated(): boolean {
-    // Implement your authentication logic here
+    // TODO: Implement actual authentication check
     return true; // Placeholder, replace with actual authentication check
   }
 
@@ -86,6 +86,10 @@ export class UsersService {
   ): Promise<{ data: User[]; total: number; page: number; limit: number }> {
     const skip = (page - 1) * limit;
     const queryBuilder = this.usersRepository.createQueryBuilder('user');
+
+    queryBuilder.andWhere('user.role != :adminRole', {
+      adminRole: UserRoles.ADMIN,
+    });
 
     if (filters.cpf) {
       queryBuilder.andWhere('user.cpf = :cpf', { cpf: filters.cpf });

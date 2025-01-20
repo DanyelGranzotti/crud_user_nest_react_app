@@ -62,7 +62,6 @@ export class ColorsController {
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateColorDto: UpdateColorDto,
   ) {
-    // Add ParseUUIDPipe
     return this.colorsService.update(id, updateColorDto);
   }
 
@@ -75,7 +74,6 @@ export class ColorsController {
   @ApiResponse({ status: 404, description: 'Color not found.' })
   @UseGuards(JwtAuthGuard)
   remove(@Param('id', new ParseUUIDPipe()) id: string) {
-    // Add ParseUUIDPipe
     return this.colorsService.remove(id);
   }
 }

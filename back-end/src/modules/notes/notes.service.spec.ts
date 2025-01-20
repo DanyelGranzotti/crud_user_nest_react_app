@@ -1,3 +1,4 @@
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -37,7 +38,10 @@ describe('NotesService', () => {
   });
 
   it('should create a note', async () => {
-    const createNoteDto: CreateNoteDto = { description: 'Test note' };
+    const createNoteDto: CreateNoteDto = {
+      description: 'Test note',
+      userId: 'user-id',
+    };
     const user = new User();
     user.id = 'user-id';
     jest.spyOn(usersRepository, 'findOne').mockResolvedValue(user);
@@ -48,12 +52,55 @@ describe('NotesService', () => {
     expect(note).toBeDefined();
   });
 
-  it('should find all notes', async () => {
-    const notes = [new Note(), new Note()];
-    jest.spyOn(notesRepository, 'find').mockResolvedValue(notes);
+  it('should throw BadRequestException if userId is not provided', async () => {
+    const createNoteDto: CreateNoteDto = {
+      description: 'Test note',
+      userId: '',
+    };
+    await expect(service.create(createNoteDto, '')).rejects.toThrow(
+      BadRequestException,
+    );
+  });
 
-    const result = await service.findAll();
+  it('should throw NotFoundException if user not found', async () => {
+    const createNoteDto: CreateNoteDto = {
+      description: 'Test note',
+      userId: 'user-id',
+    };
+    jest.spyOn(usersRepository, 'findOne').mockResolvedValue(null);
+    await expect(service.create(createNoteDto, 'user-id')).rejects.toThrow(
+      NotFoundException,
+    );
+  });
+
+  it('should throw BadRequestException if note description is not provided', async () => {
+    const createNoteDto: CreateNoteDto = {
+      description: '',
+      userId: 'user-id',
+    };
+    await expect(service.create(createNoteDto, 'user-id')).rejects.toThrow(
+      BadRequestException,
+    );
+  });
+
+  it('should find all notes with pagination and filtering by userId', async () => {
+    const notes = [new Note(), new Note()];
+    jest.spyOn(notesRepository, 'createQueryBuilder').mockReturnValue({
+      leftJoinAndSelect: jest.fn().mockReturnThis(),
+      where: jest.fn().mockReturnThis(),
+      skip: jest.fn().mockReturnThis(),
+      take: jest.fn().mockReturnThis(),
+      getMany: jest.fn().mockResolvedValue(notes),
+    } as any);
+
+    const result = await service.findAll('user-id', 1, 10);
     expect(result).toEqual(notes);
+  });
+
+  it('should throw BadRequestException if userId is not provided for findAll', async () => {
+    await expect(service.findAll('', 1, 10)).rejects.toThrow(
+      BadRequestException,
+    );
   });
 
   it('should find one note', async () => {
@@ -62,6 +109,15 @@ describe('NotesService', () => {
 
     const result = await service.findOne('note-id');
     expect(result).toEqual(note);
+  });
+
+  it('should throw BadRequestException if noteId is not provided', async () => {
+    await expect(service.findOne('')).rejects.toThrow(BadRequestException);
+  });
+
+  it('should throw NotFoundException if note not found', async () => {
+    jest.spyOn(notesRepository, 'findOne').mockResolvedValue(null);
+    await expect(service.findOne('note-id')).rejects.toThrow(NotFoundException);
   });
 
   it('should update a note', async () => {
@@ -74,6 +130,20 @@ describe('NotesService', () => {
     expect(result.description).toBe('Updated note');
   });
 
+  it('should throw BadRequestException if noteId is not provided for update', async () => {
+    const updateNoteDto: UpdateNoteDto = { description: 'Updated note' };
+    await expect(service.update('', updateNoteDto)).rejects.toThrow(
+      BadRequestException,
+    );
+  });
+
+  it('should throw BadRequestException if note description is empty for update', async () => {
+    const updateNoteDto: UpdateNoteDto = { description: '' };
+    await expect(service.update('note-id', updateNoteDto)).rejects.toThrow(
+      BadRequestException,
+    );
+  });
+
   it('should remove a note', async () => {
     const note = new Note();
     jest.spyOn(service, 'findOne').mockResolvedValue(note);
@@ -81,5 +151,9 @@ describe('NotesService', () => {
 
     await service.remove('note-id');
     expect(notesRepository.remove).toHaveBeenCalledWith(note);
+  });
+
+  it('should throw BadRequestException if noteId is not provided for remove', async () => {
+    await expect(service.remove('')).rejects.toThrow(BadRequestException);
   });
 });
