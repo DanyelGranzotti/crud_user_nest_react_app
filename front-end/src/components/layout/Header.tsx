@@ -23,7 +23,6 @@ const Header = () => {
   };
 
   const handleMenuOptionClick = (option: string) => {
-    console.log(`${option} clicked!`);
     if (option === "Sair") {
       logout();
       toast.success("Logout realizado com sucesso!");

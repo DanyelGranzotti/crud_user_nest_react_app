@@ -1,10 +1,4 @@
-import {
-  MutationCache,
-  MutationCacheNotifyEvent,
-  QueryCache,
-  QueryCacheNotifyEvent,
-  QueryClient,
-} from "@tanstack/react-query";
+import { MutationCache, QueryCache, QueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
 /**
@@ -43,13 +37,13 @@ export const createQueryClient = (
     },
   });
 
-  queryCache.subscribe((event: QueryCacheNotifyEvent) => {
-    console.log("QueryCache event:", event);
-  });
+  // queryCache.subscribe((event: QueryCacheNotifyEvent) => {
+  //   console.info("QueryCache event:", event);
+  // });
 
-  mutationCache.subscribe((event: MutationCacheNotifyEvent) => {
-    console.log("MutationCache event:", event);
-  });
+  // mutationCache.subscribe((event: MutationCacheNotifyEvent) => {
+  //   console.info("MutationCache event:", event);
+  // });
 
   return queryClient;
 };
