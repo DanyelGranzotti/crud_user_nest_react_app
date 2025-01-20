@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
-import { RootState, useAppDispatch } from "../../../state/store";
+import { RootState } from "../../../state/rootReducer";
+import { useAppDispatch } from "../../../state/store";
 import { loginService, refreshTokenService } from "../services/authService";
 import { login, logout, refreshToken } from "../state/authSlice";
 import { Credential } from "../types/credential";

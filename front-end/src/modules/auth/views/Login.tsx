@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FormInput } from "../../../components/form/FormInput";
 import { PasswordInput } from "../../../components/form/PasswordInput";
-import { RootState } from "../../../state/store";
+import { RootState } from "../../../state/rootReducer";
 import { useLogin } from "../hooks/authHooks";
 
 /**

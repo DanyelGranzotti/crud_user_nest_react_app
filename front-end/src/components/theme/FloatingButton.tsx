@@ -2,7 +2,7 @@ import { useState } from "react";
 import { BsMoonFill, BsSunFill } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleTheme } from "../../state/global/themeSlice";
-import { RootState } from "../../state/store";
+import { RootState } from "../../state/rootReducer";
 
 const FloatingButton = () => {
   const dispatch = useDispatch();

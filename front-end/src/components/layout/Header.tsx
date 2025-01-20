@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useLogout } from "../../modules/auth/hooks/authHooks";
-import { RootState } from "../../state/store";
+import { RootState } from "../../state/rootReducer";
 
 /**
  * Componente de cabeçalho que muda de cor com base no tema.

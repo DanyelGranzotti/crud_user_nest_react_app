@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { RootState } from "../state/store";
+import { RootState } from "../state/rootReducer";
 
 const NotFound = () => {
   const theme = useSelector((state: RootState) => state.theme.theme);

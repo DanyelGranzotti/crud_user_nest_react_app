@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { RootState } from "../state/store";
+import { RootState } from "../state/rootReducer";
 
 const Maintenance = () => {
   const theme = useSelector((state: RootState) => state.theme.theme);

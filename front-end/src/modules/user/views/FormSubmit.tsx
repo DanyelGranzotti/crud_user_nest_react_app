@@ -8,7 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { FormInput } from "../../../components/form/FormInput";
 import { FormMaskedInput } from "../../../components/form/FormMaskedInput";
 import { FormSelect } from "../../../components/form/FormSelect";
-import { RootState } from "../../../state/store";
+import { RootState } from "../../../state/rootReducer";
 import { useGetColors } from "../../color/hooks/useColorHooks";
 import { useCreateUser } from "../hooks/useUserHooks";
 import {
