@@ -8,3 +8,11 @@
   margin: 0;
   font-family: Inter, sans-serif;
 }
+
+.placeholder-light::placeholder {
+  color: #6c757d;
+}
+
+.placeholder-dark::placeholder {
+  color: #adb5bd;
+}

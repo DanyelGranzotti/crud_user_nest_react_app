@@ -15,6 +15,18 @@ export const getUsers = async (
 };
 
 /**
+ * Serviço para buscar uma lista de usuários com filtro por nome completo.
+ * @param params - Parâmetros de filtro ou paginação para a API.
+ * @returns Uma lista de usuários do tipo `UserList`.
+ */
+export const searchUsers = async (
+  params: Record<string, any>
+): Promise<UserList> => {
+  const response = await axios.get<UserList>(API_ENDPOINTS.USERS, { params });
+  return response.data;
+};
+
+/**
  * Serviço para criar um novo usuário.
  * @param userData - Dados do usuário a ser criado.
  * @returns O usuário criado no formato `User`.

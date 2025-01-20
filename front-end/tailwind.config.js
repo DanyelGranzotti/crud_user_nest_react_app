@@ -15,6 +15,9 @@ export default {
             dark: "#4A4A4A",
             light: "#E0E0E0",
           },
+          title: {
+            dark: "#898989",
+          },
         },
         card: {
           subtitle: "#494949",

@@ -4,6 +4,7 @@ import {
   deleteUser,
   getUserById,
   getUsers,
+  searchUsers,
   updateUser,
 } from "../services/userService";
 import { CreateUserDto, User } from "../types/user";
@@ -91,6 +92,24 @@ export const useGetUserById = (userId: string) => {
         return await getUserById(userId);
       } catch (error) {
         console.error("Error fetching user by ID:", error);
+        throw error;
+      }
+    },
+  });
+};
+
+/**
+ * Hook para buscar uma lista de usuários com filtro por nome completo.
+ * @param params - Parâmetros de filtro ou paginação para a API.
+ * @returns Dados da lista de usuários, estados de carregamento e erro.
+ */
+export const useSearchUsers = (params: Record<string, any>) => {
+  return useQuery({
+    queryKey: ["searchUsers", params],
+    queryFn: async () => {
+      try {
+        return await searchUsers(params);
+      } catch (error: any) {
         throw error;
       }
     },
