@@ -5,7 +5,7 @@ O projeto foi pensado para um sistema onde o administrador pode gerenciar usuár
 - O administrador fazer login na rota `/auth/login` com as credenciais cadastradas no arquivo `.env`
 - Os usuários podem se cadastrar na rota pública `/user/form` 
 - Uma vez cadastrado um card com as informações do usuário é exibido para o administrador na rota `/user/form/dashboard`
-- O administrador então visualizar asinofrmações forneceidas pelo usuário e cadastrar notas no card do usuário.
+- O administrador pode então visualizar as informações fornecidas pelo usuário e cadastrar notas no card do usuário.
 - O administrador pode também editar e excluir as opções de resposta do formulário de cadastro do usuário. (Até o momento apenas a opção de cor preferida foi implementada)
   
 Este projeto é uma aplicação web cliente-servidor, onde o front-end foi desenvolvido com React e o back-end com NestJS. O banco de dados utilizado é o PostgreSQL. Abaixo estão as instruções para configuração e execução de cada parte.
