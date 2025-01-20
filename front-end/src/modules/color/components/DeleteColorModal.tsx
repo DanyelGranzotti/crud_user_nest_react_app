@@ -1,10 +1,8 @@
 import React from "react";
 import { Button } from "react-bootstrap";
 import { BsXCircleFill } from "react-icons/bs";
-import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import Modal from "../../../components/common/Modal";
-import { RootState } from "../../../state/rootReducer";
 import { useDeleteColor } from "../hooks/useColorHooks";
 import { Color } from "../types/color";
 
@@ -20,7 +18,6 @@ const DeleteColorModal: React.FC<DeleteColorModalProps> = ({
   color,
 }) => {
   const deleteColorMutation = useDeleteColor();
-  const theme = useSelector((state: RootState) => state.theme.theme);
 
   const handleDelete = () => {
     deleteColorMutation.mutate(color.id, {
