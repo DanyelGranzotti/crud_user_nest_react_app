@@ -1,5 +1,3 @@
-import { initialErrors } from "./formUtils";
-
 /**
  * Valida se o CPF é válido.
  * @param cpf - CPF a ser validado.
@@ -26,35 +24,4 @@ export const isValidCPF = (cpf: string): boolean => {
   if (remainder !== parseInt(cpf.substring(10, 11))) return false;
 
   return true;
-};
-
-/**
- * Valida os dados do formulário de usuário.
- * @param formData - Dados do formulário.
- * @param setErrors - Função para definir os erros do formulário.
- * @returns `true` se o formulário for válido, caso contrário `false`.
- */
-export const validateForm = (formData: any, setErrors: any): boolean => {
-  let valid = true;
-  const newErrors = { ...initialErrors };
-
-  if (!formData.fullName) {
-    newErrors.fullName = "O nome é obrigatório.";
-    valid = false;
-  }
-  if (!isValidCPF(formData.cpf)) {
-    newErrors.cpf = "Formato de CPF inválido.";
-    valid = false;
-  }
-  if (!formData.email) {
-    newErrors.email = "O e-mail é obrigatório.";
-    valid = false;
-  }
-  if (!formData.favoriteColor.id) {
-    newErrors.favoriteColor = "A cor favorita é obrigatória.";
-    valid = false;
-  }
-
-  setErrors(newErrors);
-  return valid;
 };

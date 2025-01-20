@@ -1,3 +1,4 @@
+import { AxiosError } from "axios";
 import React, { useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { BsXCircleFill } from "react-icons/bs";
@@ -22,7 +23,6 @@ const EditColorModal: React.FC<EditColorModalProps> = ({
 }) => {
   const [colorName, setColorName] = useState<string>(color.name);
   const [colorHex, setColorHex] = useState<string>(color.hex_code);
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const updateColorMutation = useUpdateColor();
   const theme = useSelector((state: RootState) => state.theme.theme);
 
@@ -31,12 +31,12 @@ const EditColorModal: React.FC<EditColorModalProps> = ({
     setColorHex(color.hex_code);
   }, [color]);
 
+  const isFormValid = () => {
+    return colorName && colorHex;
+  };
+
   const handleSave = () => {
     if (!colorName || !colorHex) {
-      setErrors({
-        colorName: !colorName ? "Nome é obrigatório." : "",
-        colorHex: !colorHex ? "Cor é obrigatória." : "",
-      });
       toast.error("Nome e cor são obrigatórios.");
       return;
     }
@@ -50,8 +50,12 @@ const EditColorModal: React.FC<EditColorModalProps> = ({
           toast.success("Cor atualizada com sucesso!");
           onHide();
         },
-        onError: () => {
-          toast.error("Erro ao atualizar cor. Tente novamente mais tarde.");
+        onError: (error) => {
+          if (error instanceof AxiosError) {
+            toast.error("Erro ao atualizar cor. Tente novamente mais tarde.");
+          } else {
+            toast.error("Erro desconhecido ao atualizar cor.");
+          }
         },
       }
     );
@@ -76,12 +80,16 @@ const EditColorModal: React.FC<EditColorModalProps> = ({
             type="text"
             name="colorName"
             value={colorName}
-            onChange={(e) => {
-              setColorName(e.target.value);
-              setErrors({ ...errors, colorName: "" });
-            }}
-            isInvalid={!!errors.colorName}
-            errorMessage={errors.colorName}
+            onChange={(e) => setColorName(e.target.value)}
+            isInvalid={
+              updateColorMutation.error instanceof AxiosError &&
+              !!updateColorMutation.error.response?.data?.errors?.colorName
+            }
+            errorMessage={
+              updateColorMutation.error instanceof AxiosError
+                ? updateColorMutation.error.response?.data?.errors?.colorName
+                : ""
+            }
             theme={theme}
           />
           <FormInput
@@ -90,19 +98,27 @@ const EditColorModal: React.FC<EditColorModalProps> = ({
             type="color"
             name="colorHex"
             value={colorHex}
-            onChange={(e) => {
-              setColorHex(e.target.value);
-              setErrors({ ...errors, colorHex: "" });
-            }}
-            isInvalid={!!errors.colorHex}
-            errorMessage={errors.colorHex}
+            onChange={(e) => setColorHex(e.target.value)}
+            isInvalid={
+              updateColorMutation.error instanceof AxiosError &&
+              !!updateColorMutation.error.response?.data?.errors?.colorHex
+            }
+            errorMessage={
+              updateColorMutation.error instanceof AxiosError
+                ? updateColorMutation.error.response?.data?.errors?.colorHex
+                : ""
+            }
             theme={theme}
           />
           <div className="flex justify-end gap-2 mt-4">
             <Button variant="secondary" onClick={onHide}>
               Cancelar
             </Button>
-            <Button variant="primary" onClick={handleSave}>
+            <Button
+              variant="primary"
+              onClick={handleSave}
+              disabled={!isFormValid()}
+            >
               Salvar
             </Button>
           </div>

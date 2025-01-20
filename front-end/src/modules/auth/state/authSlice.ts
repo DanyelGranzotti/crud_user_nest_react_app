@@ -33,7 +33,11 @@ export const refreshToken = createAsyncThunk(
       );
       return response.data;
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.status === 401) {
+      if (
+        axios.isAxiosError(error) &&
+        error.response?.status === 401 &&
+        error.response?.data?.message === "Token Expired"
+      ) {
         dispatch(logout());
         toast.error("Sessão expirada. Por favor, faça login novamente.");
       }

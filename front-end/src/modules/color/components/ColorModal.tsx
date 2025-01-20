@@ -9,6 +9,7 @@ import { Color } from "../types/color";
 import AddColorModal from "./AddColorModal";
 import DeleteColorModal from "./DeleteColorModal";
 import EditColorModal from "./EditColorModal";
+import { AxiosError } from "axios";
 
 interface ColorModalProps {
   show: boolean;
@@ -24,7 +25,11 @@ const ColorModal: React.FC<ColorModalProps> = ({ show, onHide }) => {
 
   useEffect(() => {
     if (error) {
-      toast.error("Erro ao carregar cores. Tente novamente mais tarde.");
+      if (error instanceof AxiosError) {
+        toast.error("Erro ao carregar cores. Tente novamente mais tarde.");
+      } else {
+        toast.error("Erro desconhecido ao carregar cores.");
+      }
     }
   }, [error]);
 

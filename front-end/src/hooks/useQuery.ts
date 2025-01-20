@@ -60,29 +60,32 @@ export const createQueryClient = (
  * @returns `true` se o erro for de rede/offline; caso contrário, `false`.
  */
 function isOfflineError(error: unknown): boolean {
-  if (!navigator.onLine) return true;
-
-  if (
-    axios.isAxiosError(error) &&
-    (!error.response ||
-      error.code === "ECONNABORTED" ||
-      error.code === "ECONNREFUSED" ||
-      error.code === "ERR_NETWORK" ||
-      error.message === "Network Error")
-  ) {
+  if (!navigator.onLine) {
     return true;
   }
 
-  if (
-    typeof error === "object" &&
-    error !== null &&
-    "response" in error &&
-    "status" in (error as any).response &&
-    ((error as any).response.status === 503 ||
-      (error as any).response.status === 0)
-  ) {
-    return true;
-  }
+  const offlineErrorCodes = ["ECONNABORTED", "ECONNREFUSED", "ERR_NETWORK"];
+  const offlineErrorMessages = ["Network Error"];
+  const offlineStatusCodes = [503, 0];
 
-  return false;
+  const isAxiosError = axios.isAxiosError(error);
+  const hasNoResponse = isAxiosError && !error.response;
+  const hasOfflineErrorCode =
+    isAxiosError && error.code && offlineErrorCodes.includes(error.code);
+  const hasOfflineErrorMessage =
+    isAxiosError &&
+    error.message &&
+    offlineErrorMessages.includes(error.message);
+  const hasOfflineStatusCode =
+    isAxiosError &&
+    error.response?.status !== undefined &&
+    offlineStatusCodes.includes(error.response.status);
+
+  const isNetworkError =
+    hasNoResponse ||
+    hasOfflineErrorCode ||
+    hasOfflineErrorMessage ||
+    hasOfflineStatusCode;
+
+  return isNetworkError;
 }

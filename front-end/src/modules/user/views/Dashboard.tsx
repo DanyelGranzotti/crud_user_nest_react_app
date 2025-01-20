@@ -27,6 +27,10 @@ const Dashboard = () => {
     setSearchParams({ ...searchParams, fullName: searchTerm });
   };
 
+  const isSearchValid = () => {
+    return searchTerm.trim();
+  };
+
   useEffect(() => {
     if (searchTerm === "") {
       setSearchParams({ page: 1, limit: 10, fullName: "" });
@@ -35,16 +39,18 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (error) {
-      const axiosError = error as AxiosError;
-      const errorMessage = (axiosError.response?.data as { message?: string })
-        ?.message;
-      if (
-        axiosError.response?.status === 404 &&
-        errorMessage === "No users found with the given filters"
-      ) {
-        toast.info("Nenhum usuário encontrado para os filtros fornecidos.");
+      if (error instanceof AxiosError) {
+        const errorMessage = (error.response?.data as { message?: string })?.message;
+        if (
+          error.response?.status === 404 &&
+          errorMessage === "No users found with the given filters"
+        ) {
+          toast.info("Nenhum usuário encontrado para os filtros fornecidos.");
+        } else {
+          toast.error("Erro ao buscar usuários. Tente novamente mais tarde.");
+        }
       } else {
-        toast.error("Erro ao buscar usuários. Tente novamente mais tarde.");
+        toast.error("Erro desconhecido ao buscar usuários.");
       }
     }
   }, [error]);
@@ -73,7 +79,11 @@ const Dashboard = () => {
                   : "placeholder-light"
               }`}
             />
-            <Button onClick={handleSearch} className="btn btn-primary">
+            <Button
+              onClick={handleSearch}
+              className="btn btn-primary"
+              disabled={!isSearchValid()}
+            >
               Pesquisar
             </Button>
           </div>

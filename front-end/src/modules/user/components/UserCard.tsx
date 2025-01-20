@@ -1,4 +1,3 @@
-import PropTypes from "prop-types";
 import React, { useState } from "react";
 import { BsArrowsFullscreen } from "react-icons/bs";
 import UserModal from "./UserModal";
@@ -44,12 +43,6 @@ const UserCard: React.FC<UserCardProps> = ({ userId, fullName, email }) => {
       <UserModal show={showModal} onHide={handleCloseModal} userId={userId} />
     </>
   );
-};
-
-UserCard.propTypes = {
-  userId: PropTypes.string.isRequired,
-  fullName: PropTypes.string.isRequired,
-  email: PropTypes.string.isRequired,
 };
 
 export default UserCard;

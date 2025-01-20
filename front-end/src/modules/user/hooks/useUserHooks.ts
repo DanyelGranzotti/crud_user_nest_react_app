@@ -17,14 +17,7 @@ import { CreateUserDto, User } from "../types/user";
 export const useGetUsers = (params: Record<string, any>) => {
   return useQuery({
     queryKey: ["users", params],
-    queryFn: async () => {
-      try {
-        return await getUsers(params);
-      } catch (error) {
-        console.error("Error fetching users:", error);
-        throw error;
-      }
-    },
+    queryFn: () => getUsers(params),
   });
 };
 
@@ -87,14 +80,7 @@ export const useDeleteUser = () => {
 export const useGetUserById = (userId: string) => {
   return useQuery({
     queryKey: ["user", userId],
-    queryFn: async () => {
-      try {
-        return await getUserById(userId);
-      } catch (error) {
-        console.error("Error fetching user by ID:", error);
-        throw error;
-      }
-    },
+    queryFn: () => getUserById(userId),
   });
 };
 
@@ -106,12 +92,6 @@ export const useGetUserById = (userId: string) => {
 export const useSearchUsers = (params: Record<string, any>) => {
   return useQuery({
     queryKey: ["searchUsers", params],
-    queryFn: async () => {
-      try {
-        return await searchUsers(params);
-      } catch (error: any) {
-        throw error;
-      }
-    },
+    queryFn: () => searchUsers(params),
   });
 };

@@ -1,32 +1,31 @@
+import { AxiosError } from "axios";
 import { useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { FormInput } from "../../../components/form/FormInput";
 import { FormMaskedInput } from "../../../components/form/FormMaskedInput";
 import { FormSelect } from "../../../components/form/FormSelect";
 import { RootState } from "../../../state/rootReducer";
 import { useGetColors } from "../../color/hooks/useColorHooks";
 import { useCreateUser } from "../hooks/useUserHooks";
-import {
-  FormErrors,
-  initialErrors,
-  initialFormData,
-  UserFormData,
-} from "../utils/formUtils";
-import { validateForm } from "../utils/validation";
+import { isValidCPF } from "../utils/validation";
 
 /**
  * Componente de formulário para criar um usuário.
  * Gerencia o estado do formulário, validação e submissão.
  */
 const FormSubmit = () => {
-  const [formData, setFormData] = useState<UserFormData>(initialFormData);
-  const [errors, setErrors] = useState<FormErrors>(initialErrors);
+  const [formData, setFormData] = useState({
+    fullName: "",
+    cpf: "",
+    email: "",
+    favoriteColor: { id: "", name: "", hex_code: "", active: true },
+  });
   const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
+  const [errors, setErrors] = useState<any>({});
 
   const createUserMutation = useCreateUser();
   const { data: colors } = useGetColors({});
@@ -39,20 +38,43 @@ const FormSubmit = () => {
    */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    setErrors({ ...errors, [e.target.name]: "" });
+  };
+
+  /**
+   * Valida os dados do formulário.
+   * @returns `true` se o formulário for válido, caso contrário `false`.
+   */
+  const validateForm = () => {
+    const newErrors: any = {};
+
+    if (!formData.fullName) {
+      newErrors.fullName = "O nome é obrigatório.";
+    }
+    if (!isValidCPF(formData.cpf)) {
+      newErrors.cpf = "Formato de CPF inválido.";
+    }
+    if (!formData.email) {
+      newErrors.email = "O e-mail é obrigatório.";
+    }
+    if (!formData.favoriteColor.id) {
+      newErrors.favoriteColor = "A cor favorita é obrigatória.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   /**
    * Manipula a submissão do formulário.
    * @param e - Evento de submissão do formulário.
    */
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!recaptchaToken) {
       toast.error("Por favor, complete o reCAPTCHA.");
       return;
     }
-    if (!validateForm(formData, setErrors)) {
+    if (!validateForm()) {
       toast.error("Por favor, preencha todos os campos corretamente.");
       return;
     }
@@ -66,24 +88,40 @@ const FormSubmit = () => {
       recaptchaToken,
     };
 
-    try {
-      await createUserMutation.mutateAsync(payload);
-      toast.success("Formulário enviado com sucesso!");
-      navigate("/user/form/success");
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.message;
-      if (error.response?.status === 409) {
-        if (errorMessage === "CPF already in use") {
-          toast.error("O CPF informado já está em uso, usuário já cadastrado.");
-        } else if (errorMessage === "Email already in use") {
-          toast.error(
-            "O email informado já está em uso, usuário já cadastrado."
-          );
+    createUserMutation.mutate(payload, {
+      onSuccess: () => {
+        toast.success("Formulário enviado com sucesso!");
+        navigate("/user/form/success");
+      },
+      onError: (error: unknown) => {
+        const axiosError = error as AxiosError;
+        const errorMessage = (axiosError.response?.data as { message?: string })
+          ?.message;
+        if (axiosError.response?.status === 409) {
+          if (errorMessage === "CPF already in use") {
+            toast.error(
+              "O CPF informado já está em uso, usuário já cadastrado."
+            );
+          } else if (errorMessage === "Email already in use") {
+            toast.error(
+              "O email informado já está em uso, usuário já cadastrado."
+            );
+          }
+        } else {
+          toast.error("Erro ao criar usuário, tente novamente mais tarde.");
         }
-      } else {
-        toast.error("Erro ao criar usuário, tente novamente mais tarde.");
-      }
-    }
+      },
+    });
+  };
+
+  const isFormValid = () => {
+    return (
+      formData.fullName &&
+      isValidCPF(formData.cpf) &&
+      formData.email &&
+      formData.favoriteColor.id &&
+      recaptchaToken
+    );
   };
 
   return (
@@ -114,7 +152,7 @@ const FormSubmit = () => {
             value={formData.fullName}
             onChange={handleChange}
             isInvalid={!!errors.fullName}
-            errorMessage={errors.fullName}
+            errorMessage={errors.fullName || ""}
             theme={theme}
           />
           <FormMaskedInput
@@ -125,7 +163,7 @@ const FormSubmit = () => {
             value={formData.cpf}
             onChange={handleChange}
             isInvalid={!!errors.cpf}
-            errorMessage={errors.cpf}
+            errorMessage={errors.cpf || ""}
             theme={theme}
           />
           <FormInput
@@ -136,7 +174,7 @@ const FormSubmit = () => {
             value={formData.email}
             onChange={handleChange}
             isInvalid={!!errors.email}
-            errorMessage={errors.email}
+            errorMessage={errors.email || ""}
             theme={theme}
           />
           <FormSelect
@@ -147,14 +185,13 @@ const FormSubmit = () => {
             onChange={(e) =>
               setFormData({
                 ...formData,
-                favoriteColor: {
-                  ...formData.favoriteColor,
-                  id: e.target.value,
-                },
+                favoriteColor: colors?.find(
+                  (color) => color.id === e.target.value
+                ) || { id: "", name: "", hex_code: "", active: false },
               })
             }
             isInvalid={!!errors.favoriteColor}
-            errorMessage={errors.favoriteColor}
+            errorMessage={errors.favoriteColor || ""}
             options={colors || []}
             theme={theme}
             placeholder="Selecione uma cor"
@@ -164,7 +201,12 @@ const FormSubmit = () => {
               sitekey={process.env.RECAPTCHA_SITE_KEY || ""}
               onChange={(token) => setRecaptchaToken(token)}
             />
-            <Button variant="primary" type="submit" className="w-20">
+            <Button
+              variant="primary"
+              type="submit"
+              className="w-20"
+              disabled={!isFormValid()}
+            >
               Enviar
             </Button>
           </div>

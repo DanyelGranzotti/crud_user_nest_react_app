@@ -2,11 +2,11 @@
  * Endpoints da API utilizados no projeto.
  */
 export const API_ENDPOINTS = {
-  USERS: "/users",
-  COLORS: "/colors",
-  NOTES: "/notes",
+  USERS: "/api/users",
+  COLORS: "/api/colors",
+  NOTES: "/api/notes",
   AUTH: {
-    LOGIN: "/auth/login",
-    REFRESH: "/auth/refresh",
+    LOGIN: "/api/auth/login",
+    REFRESH: "/api/auth/refresh",
   },
 };

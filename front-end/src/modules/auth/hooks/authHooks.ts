@@ -2,8 +2,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../state/rootReducer";
 import { useAppDispatch } from "../../../state/store";
-import { loginService, refreshTokenService } from "../services/authService";
-import { login, logout, refreshToken } from "../state/authSlice";
+import { loginService } from "../services/authService";
+import { login, logout } from "../state/authSlice";
 import { Credential } from "../types/credential";
 
 /**
@@ -41,33 +41,36 @@ export const useLogout = () => {
   };
 };
 
-/**
- * Hook para atualizar o token do usuário.
- * @returns Função de mutação para atualizar o token.
- */
-export const useRefreshToken = () => {
-  const dispatch = useAppDispatch();
-  const queryClient = useQueryClient();
+// /**
+//  * Hook para atualizar o token do usuário.
+//  * @returns Função de mutação para atualizar o token.
+//  */
+// export const useRefreshToken = () => {
+//   const dispatch = useAppDispatch();
+//   const queryClient = useQueryClient();
 
-  return useMutation<{ access_token: string }, Error, void>({
-    mutationFn: async () => {
-      const data = await refreshTokenService();
-      dispatch(refreshToken());
-      return data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["auth"] });
-    },
-    onError: (error: Error) => {
-      console.error("Error refreshing token:", error);
-    },
-  });
-};
+//   return useMutation<{ access_token: string }, Error, void>({
+//     mutationFn: async () => {
+//       const data = await refreshTokenService();
+//       dispatch(refreshToken());
+//       return data;
+//     },
+//     onSuccess: () => {
+//       queryClient.invalidateQueries({ queryKey: ["auth"] });
+//     },
+//     onError: (error: Error) => {
+//       console.error("Error refreshing token:", error);
+//     },
+//   });
+// };
 
 /**
  * Hook para verificar se o usuário está autenticado.
  * @returns Booleano indicando se o usuário está autenticado.
  */
 export const useSelectIsAuthenticated = () => {
-  return useSelector((state: RootState) => !!state.auth.access_token);
+  const isAuthenticated = useSelector(
+    (state: RootState) => !!state.auth.access_token
+  );
+  return isAuthenticated;
 };

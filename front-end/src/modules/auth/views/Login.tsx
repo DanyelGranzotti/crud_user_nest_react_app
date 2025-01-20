@@ -15,7 +15,6 @@ import { useLogin } from "../hooks/authHooks";
  */
 const Login = () => {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
-  const [errors, setErrors] = useState({ email: "", password: "" });
   const loginMutation = useLogin();
   const navigate = useNavigate();
 
@@ -26,22 +25,30 @@ const Login = () => {
    */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
-    setErrors({ ...errors, [e.target.name]: "" });
+  };
+
+  const isFormValid = () => {
+    return credentials.email && credentials.password;
   };
 
   /**
    * Manipula a submissão do formulário.
    * @param e - Evento de submissão do formulário.
    */
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      await loginMutation.mutateAsync(credentials);
-      toast.success("Login realizado com sucesso!");
-      navigate("/user/form/dashboard");
-    } catch (error: any) {
-      toast.error("Erro ao realizar login, verifique suas credenciais.");
-    }
+    loginMutation.mutate(credentials, {
+      onSuccess: () => {
+        toast.success("Login realizado com sucesso!");
+        navigate("/user/form/dashboard");
+      },
+      onError: (error: any) => {
+        const errorMessage =
+          (error as any)?.response?.data?.message ||
+          "Erro ao realizar login, verifique suas credenciais.";
+        toast.error(errorMessage);
+      },
+    });
   };
 
   return (
@@ -65,8 +72,12 @@ const Login = () => {
             name="email"
             value={credentials.email}
             onChange={handleChange}
-            isInvalid={!!errors.email}
-            errorMessage={errors.email}
+            isInvalid={
+              !!(loginMutation.error as any)?.response?.data?.errors?.email
+            }
+            errorMessage={
+              (loginMutation.error as any)?.response?.data?.errors?.email
+            }
             theme={theme}
           />
           <PasswordInput
@@ -75,11 +86,20 @@ const Login = () => {
             name="password"
             value={credentials.password}
             onChange={handleChange}
-            isInvalid={!!errors.password}
-            errorMessage={errors.password}
+            isInvalid={
+              !!(loginMutation.error as any)?.response?.data?.errors?.password
+            }
+            errorMessage={
+              (loginMutation.error as any)?.response?.data?.errors?.password
+            }
             theme={theme}
           />
-          <Button variant="primary" type="submit" className="w-20">
+          <Button
+            variant="primary"
+            type="submit"
+            className="w-20"
+            disabled={!isFormValid()}
+          >
             Entrar
           </Button>
         </Form>

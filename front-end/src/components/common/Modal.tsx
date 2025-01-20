@@ -1,4 +1,3 @@
-import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 
 interface ModalProps {
@@ -57,12 +56,6 @@ const Modal: React.FC<ModalProps> = ({ show, onHide, children }) => {
       </div>
     </div>
   );
-};
-
-Modal.propTypes = {
-  show: PropTypes.bool.isRequired,
-  onHide: PropTypes.func.isRequired,
-  children: PropTypes.element.isRequired,
 };
 
 export default Modal;

@@ -1,3 +1,4 @@
+import { AxiosError } from "axios";
 import React, { useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { BsXCircleFill } from "react-icons/bs";
@@ -16,30 +17,35 @@ interface AddColorModalProps {
 const AddColorModal: React.FC<AddColorModalProps> = ({ show, onHide }) => {
   const [newColorName, setNewColorName] = useState<string>("");
   const [newColorHex, setNewColorHex] = useState<string>("#000000");
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const createColorMutation = useCreateColor();
   const theme = useSelector((state: RootState) => state.theme.theme);
 
+  const isFormValid = () => {
+    return newColorName && newColorHex;
+  };
+
   const handleSave = () => {
     if (!newColorName || !newColorHex) {
-      setErrors({
-        newColorName: !newColorName ? "Nome é obrigatório." : "",
-        newColorHex: !newColorHex ? "Cor é obrigatória." : "",
-      });
       toast.error("Nome e cor são obrigatórios.");
       return;
     }
     createColorMutation.mutate(
-      { name: newColorName, hex_code: newColorHex, active: true },
+      {
+        name: newColorName,
+        hex_code: newColorHex,
+        active: true,
+      },
       {
         onSuccess: () => {
           toast.success("Cor adicionada com sucesso!");
-          setNewColorName("");
-          setNewColorHex("#000000");
           onHide();
         },
-        onError: () => {
-          toast.error("Erro ao adicionar cor. Tente novamente mais tarde.");
+        onError: (error) => {
+          if (error instanceof AxiosError) {
+            toast.error("Erro ao adicionar cor. Tente novamente mais tarde.");
+          } else {
+            toast.error("Erro desconhecido ao adicionar cor.");
+          }
         },
       }
     );
@@ -64,12 +70,16 @@ const AddColorModal: React.FC<AddColorModalProps> = ({ show, onHide }) => {
             type="text"
             name="newColorName"
             value={newColorName}
-            onChange={(e) => {
-              setNewColorName(e.target.value);
-              setErrors({ ...errors, newColorName: "" });
-            }}
-            isInvalid={!!errors.newColorName}
-            errorMessage={errors.newColorName}
+            onChange={(e) => setNewColorName(e.target.value)}
+            isInvalid={
+              createColorMutation.error instanceof AxiosError &&
+              !!createColorMutation.error.response?.data?.errors?.newColorName
+            }
+            errorMessage={
+              createColorMutation.error instanceof AxiosError
+                ? createColorMutation.error.response?.data?.errors?.newColorName
+                : ""
+            }
             theme={theme}
           />
           <FormInput
@@ -78,19 +88,27 @@ const AddColorModal: React.FC<AddColorModalProps> = ({ show, onHide }) => {
             type="color"
             name="newColorHex"
             value={newColorHex}
-            onChange={(e) => {
-              setNewColorHex(e.target.value);
-              setErrors({ ...errors, newColorHex: "" });
-            }}
-            isInvalid={!!errors.newColorHex}
-            errorMessage={errors.newColorHex}
+            onChange={(e) => setNewColorHex(e.target.value)}
+            isInvalid={
+              createColorMutation.error instanceof AxiosError &&
+              !!createColorMutation.error.response?.data?.errors?.newColorHex
+            }
+            errorMessage={
+              createColorMutation.error instanceof AxiosError
+                ? createColorMutation.error.response?.data?.errors?.newColorHex
+                : ""
+            }
             theme={theme}
           />
           <div className="flex justify-end gap-2 mt-4">
             <Button variant="secondary" onClick={onHide}>
               Cancelar
             </Button>
-            <Button variant="primary" onClick={handleSave}>
+            <Button
+              variant="primary"
+              onClick={handleSave}
+              disabled={!isFormValid()}
+            >
               Adicionar
             </Button>
           </div>

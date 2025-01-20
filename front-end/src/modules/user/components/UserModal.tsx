@@ -1,4 +1,3 @@
-import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import { BsXCircleFill } from "react-icons/bs";
@@ -27,14 +26,13 @@ const UserModal: React.FC<UserModalProps> = ({ show, onHide, userId }) => {
   const [isVisible, setIsVisible] = useState(false);
   const { data: user, isLoading, error } = useGetUserById(userId);
   const [newNote, setNewNote] = useState("");
-  const [errors, setErrors] = useState<{ newNote: string }>({ newNote: "" });
   const createNoteMutation = useCreateNote();
   const theme = useSelector((state: RootState) => state.theme.theme);
   const { data: notes, refetch: refetchNotes } = useGetNotes(userId, 1, 2);
 
   const handleAddNote = () => {
     if (!newNote.trim()) {
-      setErrors({ newNote: "A descrição da nota é obrigatória." });
+      toast.error("A descrição da nota é obrigatória.");
       return;
     }
     createNoteMutation.mutate(
@@ -45,12 +43,15 @@ const UserModal: React.FC<UserModalProps> = ({ show, onHide, userId }) => {
       {
         onSuccess: () => {
           setNewNote("");
-          setErrors({ newNote: "" });
           refetchNotes();
           toast.success("Observação adicionada com sucesso!");
         },
       }
     );
+  };
+
+  const isFormValid = () => {
+    return newNote.trim();
   };
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -146,15 +147,18 @@ const UserModal: React.FC<UserModalProps> = ({ show, onHide, userId }) => {
               required={true}
               onChange={(e) => {
                 setNewNote(e.target.value);
-                setErrors({ newNote: "" });
               }}
-              isInvalid={!!errors.newNote}
-              errorMessage={errors.newNote}
+              isInvalid={!!createNoteMutation.error}
+              errorMessage={createNoteMutation.error?.message || ""}
               theme={theme}
               onKeyPress={handleKeyPress}
             />
             <div className="flex justify-end w-full">
-              <Button variant="secondary" onClick={handleAddNote}>
+              <Button
+                variant="secondary"
+                onClick={handleAddNote}
+                disabled={!isFormValid()}
+              >
                 Adicionar Observação
               </Button>
             </div>
@@ -163,12 +167,6 @@ const UserModal: React.FC<UserModalProps> = ({ show, onHide, userId }) => {
       )}
     </Modal>
   );
-};
-
-UserModal.propTypes = {
-  show: PropTypes.bool.isRequired,
-  onHide: PropTypes.func.isRequired,
-  userId: PropTypes.string.isRequired,
 };
 
 export default UserModal;

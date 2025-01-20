@@ -22,14 +22,7 @@ export const useGetNotes = (
 ) => {
   return useQuery({
     queryKey: ["notes", userId, page, limit],
-    queryFn: async () => {
-      try {
-        return await getNotes({ userId, page, limit });
-      } catch (error) {
-        console.error("Error fetching notes:", error);
-        throw error;
-      }
-    },
+    queryFn: () => getNotes({ userId, page, limit }),
   });
 };
 
@@ -92,13 +85,6 @@ export const useDeleteNote = () => {
 export const useGetNoteById = (noteId: string) => {
   return useQuery({
     queryKey: ["note", noteId],
-    queryFn: async () => {
-      try {
-        return await getNoteById(noteId);
-      } catch (error) {
-        console.error("Error fetching note by ID:", error);
-        throw error;
-      }
-    },
+    queryFn: () => getNoteById(noteId),
   });
 };

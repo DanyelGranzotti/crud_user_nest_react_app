@@ -10,6 +10,7 @@ import AppRoutes from "./routes/router";
 import { store } from "./state/store";
 
 import "bootstrap/dist/css/bootstrap.min.css";
+import "react-toastify/dist/ReactToastify.css";
 import { setTheme } from "./state/global/themeSlice";
 import { RootState } from "./state/rootReducer";
 import "./styles/global.css";
@@ -74,6 +75,7 @@ const ThemedApp = () => {
         draggable
         pauseOnHover
         theme={theme}
+        limit={1}
       />
       <BrowserRouter>
         <FloatingButton />

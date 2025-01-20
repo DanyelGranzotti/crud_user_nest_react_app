@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import Modal from "../../../components/common/Modal";
 import { useDeleteColor } from "../hooks/useColorHooks";
 import { Color } from "../types/color";
+import { AxiosError } from "axios";
 
 interface DeleteColorModalProps {
   show: boolean;
@@ -25,8 +26,12 @@ const DeleteColorModal: React.FC<DeleteColorModalProps> = ({
         toast.success("Cor excluída com sucesso!");
         onHide();
       },
-      onError: () => {
-        toast.error("Erro ao excluir cor. Tente novamente mais tarde.");
+      onError: (error) => {
+        if (error instanceof AxiosError) {
+          toast.error("Erro ao excluir cor. Tente novamente mais tarde.");
+        } else {
+          toast.error("Erro desconhecido ao excluir cor.");
+        }
       },
     });
   };

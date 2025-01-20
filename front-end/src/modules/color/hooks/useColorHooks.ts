@@ -16,14 +16,7 @@ import { Color } from "../types/color";
 export const useGetColors = (params: Record<string, any>) => {
   return useQuery({
     queryKey: ["colors", params],
-    queryFn: async () => {
-      try {
-        return await getColors(params);
-      } catch (error) {
-        console.error("Error fetching colors:", error);
-        throw error;
-      }
-    },
+    queryFn: () => getColors(params),
   });
 };
 
@@ -90,13 +83,6 @@ export const useDeleteColor = () => {
 export const useGetColorById = (colorId: string) => {
   return useQuery({
     queryKey: ["color", colorId],
-    queryFn: async () => {
-      try {
-        return await getColorById(colorId);
-      } catch (error) {
-        console.error("Error fetching color by ID:", error);
-        throw error;
-      }
-    },
+    queryFn: () => getColorById(colorId),
   });
 };
