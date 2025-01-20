@@ -1,16 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
-import themeReducer from "./global/themeSlice";
 import rootReducer from "./rootReducer";
 
 /**
  * Configura a store do Redux com os reducers e middlewares necessários.
  */
 export const store = configureStore({
-  reducer: {
-    rootReducer,
-    theme: themeReducer,
-  },
+  reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,

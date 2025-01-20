@@ -10,6 +10,12 @@ export default {
           darkgray: "#2D2D2D",
           gray: "#3A3A3A",
         },
+        menu: {
+          border: {
+            dark: "#4A4A4A",
+            light: "#E0E0E0",
+          },
+        },
         background: {
           dark: "#181818",
         },

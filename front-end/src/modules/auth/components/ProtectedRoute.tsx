@@ -1,8 +1,9 @@
+import { ReactNode } from "react";
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { selectIsAuthenticated } from "../state/authSlice";
-
-import { ReactNode } from "react";
 
 /**
  * Componente de rota protegida.
@@ -13,7 +14,8 @@ import { ReactNode } from "react";
 const ProtectedRoute = ({ children }: { children: ReactNode }) => {
   const isAuth = useSelector(selectIsAuthenticated);
   if (!isAuth) {
-    return <Navigate to="/login" replace />;
+    toast.info("Você precisa estar logado para acessar esta página.");
+    return <Navigate to="/auth/login" />;
   }
   return children;
 };

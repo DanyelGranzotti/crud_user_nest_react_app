@@ -4,7 +4,7 @@ import { API_ENDPOINTS } from "../../../api/endpoints";
 import { User } from "../../user/types/user";
 
 interface AuthState {
-  token: string | null;
+  access_token: string | null;
   user: User | null;
   status: string;
   error: string | null;
@@ -14,17 +14,17 @@ interface AuthState {
  * Estado inicial da autenticação.
  */
 const initialState: AuthState = {
-  token: null,
+  access_token: null,
   user: null,
   status: "idle",
   error: null,
 };
 
 /**
- * Thunk para atualizar o token de autenticação.
+ * Thunk para atualizar o access_token de autenticação.
  */
 export const refreshToken = createAsyncThunk("auth/refreshToken", async () => {
-  const response = await axios.post<{ token: string }>(
+  const response = await axios.post<{ access_token: string }>(
     API_ENDPOINTS.AUTH.REFRESH
   );
   return response.data;
@@ -40,23 +40,24 @@ const authSlice = createSlice({
     /**
      * Ação para realizar login.
      * @param state - Estado atual.
-     * @param action - Ação contendo o token e o usuário.
+     * @param action - Ação contendo o access_token e o usuário.
      */
-    login(state, action: PayloadAction<{ token: string }>) {
-      state.token = action.payload.token;
+    login(state, action: PayloadAction<{ access_token: string }>) {
+      console.log("login", action.payload);
+      state.access_token = action.payload.access_token;
     },
     /**
      * Ação para realizar logout.
      * @param state - Estado atual.
      */
     logout(state) {
-      state.token = null;
+      state.access_token = null;
       state.user = null;
     },
   },
   extraReducers: (builder) => {
     builder.addCase(refreshToken.fulfilled, (state, action) => {
-      state.token = action.payload.token;
+      state.access_token = action.payload.access_token;
     });
   },
 });
@@ -68,6 +69,6 @@ export const { login, logout } = authSlice.actions;
  * @param state - Estado global.
  * @returns Booleano indicando se o usuário está autenticado.
  */
-export const selectIsAuthenticated = (state: any) => !!state.auth.token;
+export const selectIsAuthenticated = (state: any) => !!state.auth.access_token;
 
 export default authSlice.reducer;

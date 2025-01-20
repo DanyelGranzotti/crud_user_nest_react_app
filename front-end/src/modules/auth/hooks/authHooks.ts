@@ -48,7 +48,7 @@ export const useRefreshToken = () => {
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
 
-  return useMutation<{ token: string }, Error, void>({
+  return useMutation<{ access_token: string }, Error, void>({
     mutationFn: async () => {
       const data = await refreshTokenService();
       dispatch(refreshToken());
@@ -68,5 +68,5 @@ export const useRefreshToken = () => {
  * @returns Booleano indicando se o usuário está autenticado.
  */
 export const useSelectIsAuthenticated = () => {
-  return useSelector((state: RootState) => !!state.rootReducer.auth.token);
+  return useSelector((state: RootState) => !!state.auth.access_token);
 };

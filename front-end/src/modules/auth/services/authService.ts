@@ -10,7 +10,7 @@ export const loginService = async (credentials: {
   email: string;
   password: string;
 }) => {
-  const response = await axios.post<{ token: string }>(
+  const response = await axios.post<{ access_token: string }>(
     `${process.env.API_END_POINT}${API_ENDPOINTS.AUTH.LOGIN}`,
     credentials
   );
@@ -22,7 +22,7 @@ export const loginService = async (credentials: {
  * @returns Novo token.
  */
 export const refreshTokenService = async () => {
-  const response = await axios.post<{ token: string }>(
+  const response = await axios.post<{ access_token: string }>(
     `${process.env.API_END_POINT}${API_ENDPOINTS.AUTH.REFRESH}`
   );
   return response.data;
