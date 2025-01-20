@@ -8,7 +8,8 @@ import rootReducer, { RootState } from "./rootReducer";
 /**
  * Configura a store do Redux com os reducers e middlewares necessários.
  */
-const secretKey = process.env.REACT_APP_ENCRYPTION_KEY;
+const secretKey =
+  process.env.REACT_APP_ENCRYPTION_KEY || "default-encryption-key";
 if (!secretKey) {
   throw new Error("Encryption key is not defined in environment variables");
 }
