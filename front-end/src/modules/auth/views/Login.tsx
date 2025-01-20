@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FormInput } from "../../../components/form/FormInput";
+import { PasswordInput } from "../../../components/form/PasswordInput";
 import { RootState } from "../../../state/store";
 import { useLogin } from "../hooks/authHooks";
 
@@ -68,10 +69,9 @@ const Login = () => {
             errorMessage={errors.email}
             theme={theme}
           />
-          <FormInput
+          <PasswordInput
             controlId="formPassword"
             label="Senha"
-            type="password"
             name="password"
             value={credentials.password}
             onChange={handleChange}
