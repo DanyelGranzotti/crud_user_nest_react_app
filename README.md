@@ -32,8 +32,6 @@ Para facilitar a execução do projeto, foi criado um arquivo `docker-compose.ym
 1. Certifique-se de ter o Docker e o Docker Compose instalados.
 2. Navegue até o diretório raiz do projeto.
 3. Execute `docker-compose up --build` para construir e iniciar os containers.
-4. Após a build, navegue até o container do back-end com `docker exec -it app sh`.
-6. Execute `npm run migration:run` para criar as tabelas no banco de dados.
 
 ### Serviços Docker
 
