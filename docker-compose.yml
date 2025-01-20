@@ -37,6 +37,8 @@ services:
     depends_on:
       - postgres
     restart: always
+    command: >
+      sh -c "npm run migration:run && npm run start:prod"
 
   front:
     build:
@@ -44,6 +46,8 @@ services:
       dockerfile: ./Dockerfile
     environment:
       - API_END_POINT=http://app:3000
+      - RECAPTCHA_SITE_KEY=6LdLuLwqAAAAAHcNk3NC8oHfIwbPIEvJksH_XSMy
+      - REACT_APP_ENCRYPTION_KEY=your-encryption-key-here
     ports:
       - "80:80"
     depends_on:
