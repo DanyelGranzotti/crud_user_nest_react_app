@@ -49,6 +49,12 @@ const Dashboard = () => {
     }
   }, [error]);
 
+  useEffect(() => {
+    if (userList?.data) {
+      toast.success("Usuários carregados com sucesso.");
+    }
+  }, [userList]);
+
   return (
     <>
       <Header />
