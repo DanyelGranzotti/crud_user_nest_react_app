@@ -16,6 +16,13 @@ export default {
             light: "#E0E0E0",
           },
         },
+        card: {
+          subtitle: "#494949",
+          fullscreen: "#8C8C8C",
+        },
+        modal: {
+          title: "#CBCBCB",
+        },
         background: {
           dark: "#181818",
         },

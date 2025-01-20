@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
+import { toast } from "react-toastify";
 import { API_ENDPOINTS } from "../../../api/endpoints";
 import { User } from "../../user/types/user";
 
@@ -23,12 +24,23 @@ const initialState: AuthState = {
 /**
  * Thunk para atualizar o access_token de autenticação.
  */
-export const refreshToken = createAsyncThunk("auth/refreshToken", async () => {
-  const response = await axios.post<{ access_token: string }>(
-    API_ENDPOINTS.AUTH.REFRESH
-  );
-  return response.data;
-});
+export const refreshToken = createAsyncThunk(
+  "auth/refreshToken",
+  async (_, { dispatch }) => {
+    try {
+      const response = await axios.post<{ access_token: string }>(
+        `${process.env.API_END_POINT}${API_ENDPOINTS.AUTH.REFRESH}`
+      );
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
+        dispatch(logout());
+        toast.error("Sessão expirada. Por favor, faça login novamente.");
+      }
+      throw error;
+    }
+  }
+);
 
 /**
  * Slice de autenticação que gerencia o estado de autenticação do usuário.

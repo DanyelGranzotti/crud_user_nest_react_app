@@ -70,7 +70,7 @@ const Header = () => {
           </div>
           {menuOpen && (
             <div
-              className={`absolute right-0 mt-2 w-64 rounded-sm border-[1px] 
+              className={`absolute right-0 mt-2 w-64 rounded-sm border-[1px] z-10
                  ${
                    theme === "dark"
                      ? "bg-background-dark text-gray-200 border-menu-border-dark "

@@ -87,6 +87,10 @@ export class UsersService {
     const skip = (page - 1) * limit;
     const queryBuilder = this.usersRepository.createQueryBuilder('user');
 
+    queryBuilder.andWhere('user.role != :adminRole', {
+      adminRole: UserRoles.ADMIN,
+    });
+
     if (filters.cpf) {
       queryBuilder.andWhere('user.cpf = :cpf', { cpf: filters.cpf });
     }
